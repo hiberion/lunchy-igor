@@ -2,9 +2,17 @@ package igor.lunchy;
 
 public class MenuEnrty {
 	int ID;
+	
+	@Column(name = "Name")
 	String name = "";
+	
+	@Column(name = "Category")
 	int category = 0;
+	
+	@Column(name = "Description")
 	String descript = "";
+	
+	
 	double price = 0.0;
 	boolean avail = true;
 	
