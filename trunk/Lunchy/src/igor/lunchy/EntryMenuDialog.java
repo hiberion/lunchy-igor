@@ -38,7 +38,9 @@ public class EntryMenuDialog {
 		//createControlButtons();
 		//shell.pack();
 		createWidgets();
+		setTitle("New menu entry");
 		
+		shell.pack();
 		shell.open();
 		Display display = shell.getDisplay();
 		while(!shell.isDisposed()){
@@ -72,37 +74,20 @@ public class EntryMenuDialog {
 			addTextListener(text);
 		}
 		
-		Label statusCaption = new Label(shell, SWT.NONE);
-		gridData = new GridData();
-		gridData.minimumWidth = 40;
-		statusCaption.setText("Current menu status: ");
-		statusCaption.setLayoutData(gridData);
 		
-		Label statusText = new Label(shell, SWT.BORDER);
+		Button btOK = new Button(shell, SWT.PUSH);
 		gridData = new GridData();
-		gridData.horizontalSpan = 3;
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.grabExcessHorizontalSpace = true;
-		statusText.setText("Current menu status");
-		statusText.setLayoutData(gridData);
+		//gridData.horizontalIndent = 30;
+		//gridData.horizontalSpan = 2;
+		btOK.setText("OK");
+		btOK.setLayoutData(gridData);
 		
-		Label validCaption = new Label(shell, SWT.NONE);
+		Button btCancel = new Button(shell, SWT.PUSH);
 		gridData = new GridData();
-		gridData.minimumWidth = 40;
-		validCaption.setText("Menu valid date: ");
-		validCaption.setLayoutData(gridData);
-		
-		DateTime validDate = new DateTime(shell, SWT.NONE);
-		gridData = new GridData();
-		gridData.minimumWidth = 40;
-		validDate.setLayoutData(gridData);
-		
-		Button checkBoxUpdate = new Button(shell, SWT.CHECK | SWT.RIGHT_TO_LEFT);
-		gridData = new GridData();
-		gridData.horizontalIndent = 30;
-		gridData.horizontalSpan = 2;
-		checkBoxUpdate.setText("Menu updated: ");
-		checkBoxUpdate.setLayoutData(gridData);
+		//gridData.horizontalIndent = 30;
+		//gridData.horizontalSpan = 2;
+		btCancel.setText("Cancel");
+		btCancel.setLayoutData(gridData);
 	}
 	
 	public String[] getLabels() {

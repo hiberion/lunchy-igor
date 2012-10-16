@@ -47,6 +47,8 @@ public class MenuEditForm {
 			if(!display.readAndDispatch())
 				display.sleep();
 		}
+		
+		//LunchyMain.setStatusLabel("Modified");
 	}
 	
 	public void createWidgets() {

@@ -15,7 +15,8 @@ import org.eclipse.swt.widgets.*;
 public class LunchyMain {
 	
 	private Shell shell;
-	public String status = "";
+	public static String status = "";
+	public Label statusLabel;
 	
 	
 	public static void main(String[] args) {
@@ -57,8 +58,7 @@ public class LunchyMain {
 		layout.pack = false;
 		shell.setLayout(layout);
 		
-		Label status =  createControlButtons();
-		status.setText("OK");
+		createControlButtons();
 		
 		Rectangle clientArea = display.getClientArea();
 		shell.setText("  Lunchy");
@@ -70,7 +70,7 @@ public class LunchyMain {
 		return shell;
 	}
 	
-	private Label createControlButtons() {
+	private void createControlButtons() {
 		Button btMenuEditor = new Button(shell, SWT.PUSH);
 		btMenuEditor.setText("Edit menu");
 		btMenuEditor.setLayoutData(new RowData(170, 40));
@@ -84,7 +84,7 @@ public class LunchyMain {
 		btOrder.setText("Make order");
 		btOrder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				openEditMenu();
+				//openEditMenu();
 			}
 		});
 		
@@ -92,7 +92,7 @@ public class LunchyMain {
 		btSendOrder.setText("Send Order");
 		btSendOrder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				openEditMenu();
+				//openEditMenu();
 			}
 		});
 		
@@ -100,7 +100,7 @@ public class LunchyMain {
 		btPrint.setText("Print Order");
 		btPrint.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				openEditMenu();
+				//openEditMenu();
 			}
 		});
 		
@@ -108,11 +108,11 @@ public class LunchyMain {
 		btOptions.setText("Options");
 		btOptions.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				openEditMenu();
+				//openEditMenu();
 			}
 		});
 		
-		Label statusLabel = new Label(shell, SWT.BORDER);
+		statusLabel = new Label(shell, SWT.BORDER);
 		statusLabel.setText(status);
 		
 		
@@ -120,13 +120,18 @@ public class LunchyMain {
 		//DateTime dt = new DateTime(shell, SWT.CALENDAR);
 		//statusLabel.setLayoutData(new RowData(150, 60));
 		
-		return statusLabel;
+		//return statusLabel;
 	}
 	
 	private void openEditMenu() {
 		//System.out.println("All OK");
 		MenuEditForm menuForm = new MenuEditForm(shell);
 		menuForm.open();
+	}
+	
+	
+	static public void setStatusLabel() {
+		
 	}
 
 }
