@@ -1,5 +1,7 @@
 package igor.lunchy;
 
+import java.lang.reflect.Field;
+
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
@@ -60,6 +62,24 @@ public class EntryMenuDialog {
 		if (values == null)
 			values = new String[labels.length];
 		
+		MenuEnrty entry = null;
+		
+		for (Field field: entry.getClass().getDeclaredFields()) {
+			Column column = field.getAnnotation(Column.class);
+			String columnName = column != null ? column.name() : field.getName();
+			
+			Label label = new Label(shell, SWT.RIGHT);
+			label.setText(columnName);	
+			Text text = new Text(shell, SWT.BORDER);
+			gridData = new GridData();
+			gridData.widthHint = 400;
+			text.setLayoutData(gridData);
+			text.setText(field.get(entry).toString());
+			
+			addTextListener(text);
+		}
+		
+		
 		for (int i = 0; i < labels.length; i++) {
 			Label label = new Label(shell, SWT.RIGHT);
 			label.setText(labels[i]);	
@@ -81,6 +101,20 @@ public class EntryMenuDialog {
 		//gridData.horizontalSpan = 2;
 		btOK.setText("OK");
 		btOK.setLayoutData(gridData);
+		
+		btOK.addSelectionListener(new SelectionListener(){
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				EntryMenuDialog.this.shell.close();
+			}
+		});
 		
 		Button btCancel = new Button(shell, SWT.PUSH);
 		gridData = new GridData();
