@@ -28,6 +28,20 @@ public class MenuEditForm {
 		}
 	}
 	
+	private void editMenuEntry(TableItem item) {
+		EntryMenuDialog dialog = new EntryMenuDialog(shell);
+		String[] values = new String[table.getColumnCount()];
+		for (int i = 0; i < values.length; i++) {
+			values[i] = item.getText(i);
+		}
+		dialog.setValues(values);
+		values = dialog.open();
+		if (values != null) {
+			item.setText(values);
+			//isModified = true;
+		}
+	}
+	
 	public void open() {
 		//createTextWidgets();
 		//createControlButtons();
@@ -104,6 +118,13 @@ public class MenuEditForm {
 		//gridData.horizontalIndent = 30;
 		btEditEntry.setText("Edit menu entry");
 		btEditEntry.setLayoutData(gridData);
+		btEditEntry.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				TableItem[] items = table.getSelection();
+				if (items.length == 0) return;
+				editMenuEntry(items[0]);
+			}
+		});
 		
 		Label categoryCaption = new Label(shell, SWT.NONE);
 		gridData = new GridData();
