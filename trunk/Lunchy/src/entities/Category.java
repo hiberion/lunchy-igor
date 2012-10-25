@@ -8,7 +8,12 @@ public class Category {
 	
 	public Category(int id, String name) {
 		ID = id;
-		this.name = new String(name);
+		this.name = name;
+	}
+	
+	public Category(String name) {
+		ID = newId();
+		this.name = name;
 	}
 	
 	public int getID() {
@@ -32,4 +37,12 @@ public class Category {
 		return result;
 	}
 	
+	
+	public synchronized static int newId() {
+		return curID++;
+	}
+
+	public synchronized static void initId(int maxId) {
+		curID = maxId;
+	}
 }

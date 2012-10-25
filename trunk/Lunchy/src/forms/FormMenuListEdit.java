@@ -76,7 +76,7 @@ public class FormMenuListEdit {
 		for (int i = 0; i < currentMenuList.size(); i++) {
 			String[] temp = new String[6];
 			TableItem item = new TableItem(table, SWT.NONE);
-			temp = currentMenuList.get(i).ToStrArr();
+			temp = currentMenuList.get(i).toStringArray();
 			temp[2] = LunchyMain.categoryList.get(currentMenuList.get(i).getCategory()).getName();
 			temp[5] = currentMenuList.get(i).getAvail() ? "Доступен" : "Не доступен";
 			item.setText(temp);
@@ -134,7 +134,7 @@ public class FormMenuListEdit {
 		gridData.minimumWidth = 40;
 		validDate.setLayoutData(gridData);
 		
-		Button checkBoxUpdate = new Button(shell, SWT.CHECK | SWT.RIGHT_TO_LEFT);
+		Button checkBoxUpdate = new Button(shell, SWT.CHECK | SWT.LEFT_TO_RIGHT);
 		gridData = new GridData();
 		gridData.horizontalIndent = 30;
 		gridData.horizontalSpan = 2;
@@ -243,7 +243,7 @@ public class FormMenuListEdit {
 		for (int i = 0; i < currentMenuList.size(); i++) {
 			String[] temp = new String[6];
 			TableItem item = new TableItem(table, SWT.NONE);
-			temp = currentMenuList.get(i).ToStrArr();
+			temp = currentMenuList.get(i).toStringArray();
 			temp[2] = LunchyMain.categoryList.get(currentMenuList.get(i).getCategory()).getName();
 			temp[5] = currentMenuList.get(i).getAvail() ? "Доступен" : "Не доступен";
 			item.setText(temp);

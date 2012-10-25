@@ -105,7 +105,7 @@ public class MenuItem {
 		return result;
 	}
 	
-	public String[] ToStrArr() {
+	public String[] toStringArray() {
 		String[] result = new String[6];
 		result[0] = String.valueOf(ID);
 		result[1] = new String(name);
@@ -116,10 +116,20 @@ public class MenuItem {
 		return result;		
 	}
 	
+	public String toString() {
+		String[] array = toStringArray();
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(array[0]).append(" ").append(array[1]);
+		
+		return sb.toString();
+	}
+	
 	public String ToStr() {
 		String result;
-		result = ToStrArr()[0] + " " + ToStrArr()[1] + " " + ToStrArr()[2] + " " +
-				ToStrArr()[3] + " " + ToStrArr()[4] + " " + ToStrArr()[5];
+		String[] array = toStringArray();
+		result = array[0] + " " + toStringArray()[1] + " " + toStringArray()[2] + " " +
+				toStringArray()[3] + " " + toStringArray()[4] + " " + toStringArray()[5];
 		return result;
 	}
 	
