@@ -42,7 +42,7 @@ public class TextFileMenuItemDAO implements IMenuItemDAO {
 		int colSize = menuItemCol.size();
 		String[][] r1 = new String[colSize][6];
 		for (int i = 0; i < colSize; i++) {
-			r1[i] = menuItemCol.get(i).ToStrArr();
+			r1[i] = menuItemCol.get(i).toStringArray();
 		}
 		
 		boolean result = ParseTextFile.putStringTableToFile(fileName, r1);

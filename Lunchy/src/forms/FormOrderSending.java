@@ -59,7 +59,7 @@ public class FormOrderSending {
 		Color clGreen = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
 		for (int i = 0; i < LunchyMain.menuList.size(); i++) {
 			TableItem item = new TableItem(table, SWT.NONE);
-			item.setText(LunchyMain.menuList.get(i).ToStrArr());
+			item.setText(LunchyMain.menuList.get(i).toStringArray());
 			item.setForeground(clGreen);
 		}
 			

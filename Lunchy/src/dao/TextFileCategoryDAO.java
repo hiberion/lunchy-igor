@@ -16,12 +16,20 @@ public class TextFileCategoryDAO implements ICategoryDAO {
 		ArrayList<Category> result = new ArrayList<>();
 		String[][] Data = ParseTextFile.getStringTable(fileName, "_", 2);
 		
-		for (Category.curID = 0; Category.curID < Data.length; Category.curID++) {
-			tempID = Integer.parseInt(Data[Category.curID][0]);
-			tempName = Data[Category.curID][1];
+		int maxId = 0;
+		
+		for (String[] line: Data) {
+			tempID = Integer.parseInt(line[0]);
+			tempName = line[1];
 			
 			result.add(new Category(tempID, tempName));
+			
+			if (tempID > maxId) {
+				maxId = tempID;
+			}
 		}
+		
+		Category.initId(maxId + 1);
 		
 		return result;
 	}

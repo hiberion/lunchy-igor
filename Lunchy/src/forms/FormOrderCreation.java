@@ -46,7 +46,7 @@ public class FormOrderCreation {
 			String[] temp = new String[6];
 			String[] res = new String[4];
 			TableItem item = new TableItem(tableMenu, SWT.NONE);
-			temp = currentMenuList.get(i).ToStrArr();
+			temp = currentMenuList.get(i).toStringArray();
 			temp[2] = LunchyMain.categoryList.get(currentMenuList.get(i).getCategory()).getName();
 			res[0] = temp[1];
 			res[1] = temp[2];
@@ -319,7 +319,7 @@ public class FormOrderCreation {
 			String[] temp = new String[6];
 			String[] res = new String[4];
 			TableItem item = new TableItem(tableMenu, SWT.NONE);
-			temp = tempMenuList.get(i).ToStrArr();
+			temp = tempMenuList.get(i).toStringArray();
 			temp[2] = LunchyMain.categoryList.get(tempMenuList.get(i).getCategory()).getName();
 			res[0] = temp[1];
 			res[1] = temp[2];
