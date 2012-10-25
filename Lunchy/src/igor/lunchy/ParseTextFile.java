@@ -1,3 +1,7 @@
+// Service class for parse text files
+// Content static functions for converting text files to String[][]
+// and converting String[][] to text file
+
 package igor.lunchy;
 
 import java.io.*;
@@ -9,6 +13,8 @@ public class ParseTextFile {
 		super();
 	}
 	
+	// Service internal function
+	// Encoding string array to single string ( String[] -> String )
 	private static String encodeLine(String[] tableItems, String delimiter) {
 		String line = "";
 		for (int i = 0; i < tableItems.length - 1; i++) {
@@ -19,6 +25,8 @@ public class ParseTextFile {
 		return line;
 	}
 	
+	// Service internal function
+	// Decoding single string with delimiters to string array ( String -> String[] )
 	private static String[] decodeLine(String line, String delimiter, int rowCount) {
 		if(line == null)
 			return null;
@@ -40,11 +48,10 @@ public class ParseTextFile {
 		return parsedLine;
 	}
 	
-	static public String[][] getStringTable(String filename, String delimiter, int rowCount) {
+	public static String[][] getStringTable(String filename, String delimiter, int rowCount) {
 
 		if(filename == null)
 			return null;
-		
 		
 		File file = new File(filename);
 		if (!file.exists()) {
@@ -97,7 +104,7 @@ public class ParseTextFile {
 		return tableInfo;
 	}
 	
-	static public boolean putStringTableToFile(String filename, String[][] data) {
+	public static boolean putStringTableToFile(String filename, String[][] data) {
 		
 		if(filename == null)
 			return false;

@@ -1,25 +1,46 @@
-package igor.lunchy;
+package forms;
 
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
+import igor.lunchy.LunchyMain;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
+//import org.eclipse.swt.graphics.Color;
+//import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+//import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-public class MenuEditForm {
+import entities.Category;
+import entities.MenuItem;
+
+public class FormMenuListEdit {
 	
 	Shell shell;
 	private Table table;
-	String[] columnNames = {"ID", "Name", "Category", "Description", "Price", "Availability"};
+	private static ResourceBundle resLunchy = ResourceBundle.getBundle("lunchy_en");
+	String[] columnLabels = { 	resLunchy.getString("ID"),
+								resLunchy.getString("Menu_item_name"),
+								resLunchy.getString("Menu_cat"),
+								resLunchy.getString("Menu_descr"),
+								resLunchy.getString("Price"),
+								resLunchy.getString("Menu_aval")
+								};
 	
-	public MenuEditForm(Shell parent) {
+	//String[] columnNames = {"ID", "Name", "Category", "Description", "Price", "Availability"};
+	
+	ArrayList<MenuItem> currentMenuList = new ArrayList<>(LunchyMain.menuList);
+	
+	public FormMenuListEdit(Shell parent) {
 		shell = new Shell(parent, SWT.SHELL_TRIM);
-		shell.setText("Menu Editor");
+		shell.setText(resLunchy.getString("Menu_editor"));
 		shell.setImage(new Image(shell.getDisplay(), "icon2.jpg"));
 	}
 	
 	private void newMenuEntry() {
-		EntryMenuDialog dialog = new EntryMenuDialog(shell);
+		DialogMenuRecordEdit dialog = new DialogMenuRecordEdit(shell);
 		String[] data = dialog.open();
 		if (data != null) {
 			TableItem item = new TableItem(table, SWT.NONE);
@@ -29,7 +50,7 @@ public class MenuEditForm {
 	}
 	
 	private void editMenuEntry(TableItem item) {
-		EntryMenuDialog dialog = new EntryMenuDialog(shell);
+		DialogMenuRecordEdit dialog = new DialogMenuRecordEdit(shell);
 		String[] values = new String[table.getColumnCount()];
 		for (int i = 0; i < values.length; i++) {
 			values[i] = item.getText(i);
@@ -48,14 +69,26 @@ public class MenuEditForm {
 		//shell.pack();
 		createWidgets();
 		
-		String[][] Data = ParseTextFile.getStringTable("menu.txt", "_", 6);
+		//String[][] Data = ParseTextFile.getStringTable("Data/menu.txt", "_", 6);
 		//MenuEnrty[] menu = MenuEnrty.getMenuEntries("menu.txt");
-		for (int i = 0; i < Data.length; i++) {
-			TableItem item = new TableItem(table, SWT.NONE);
-			item.setText(Data[i]);
-		}
 		
+		//Color clGreen = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
+		for (int i = 0; i < currentMenuList.size(); i++) {
+			String[] temp = new String[6];
+			TableItem item = new TableItem(table, SWT.NONE);
+			temp = currentMenuList.get(i).ToStrArr();
+			temp[2] = LunchyMain.categoryList.get(currentMenuList.get(i).getCategory()).getName();
+			temp[5] = currentMenuList.get(i).getAvail() ? "Доступен" : "Не доступен";
+			item.setText(temp);
+			//item.setForeground(clGreen);
+		}
+			
+		
+		shell.pack();
 		shell.open();
+		//shell.setSize(600, 600);
+		//shell.setSize(900, shell.getSize().y);
+		
 		Display display = shell.getDisplay();
 		while(!shell.isDisposed()){
 			if(!display.readAndDispatch())
@@ -73,6 +106,12 @@ public class MenuEditForm {
 		Label statusCaption = new Label(shell, SWT.NONE);
 		GridData gridData = new GridData();
 		gridData.minimumWidth = 40;
+		
+		//Font font1 = new Font(Display.getCurrent(), "Tahoma", 14, SWT.BOLD);
+		//Color clGreen = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
+		//TextStyle textstyle = new TextStyle(font1, clGreen, null);
+		//statusCaption.setForeground(clGreen);
+		
 		statusCaption.setText("Current menu status: ");
 		statusCaption.setLayoutData(gridData);
 		
@@ -132,11 +171,24 @@ public class MenuEditForm {
 		categoryCaption.setText("Menu category: ");
 		categoryCaption.setLayoutData(gridData);
 		
-		Combo categoryCombo = new Combo(shell, SWT.NONE);
+		// ?????? Final ? Why ?
+		final Combo categoryCombo = new Combo(shell, SWT.NONE);
+		String[] comboData = new String[LunchyMain.categoryList.size()];
+		for (Category cat: LunchyMain.categoryList) {
+			comboData[cat.getID()] = cat.getName();
+		}
+		categoryCombo.setItems(comboData);
+		categoryCombo.select(0);
 		gridData = new GridData();
 		//categoryCaption.setText("Menu category: ");
 		//gridData.minimumWidth = 10;
 		categoryCombo.setLayoutData(gridData);
+		categoryCombo.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				//System.out.println("Combo");
+				refreshTable(categoryCombo.getSelectionIndex());
+			}
+		});
 		
 		gridData = new GridData();
 		//gridData.horizontalIndent = 30;
@@ -148,7 +200,8 @@ public class MenuEditForm {
 		table = new Table(shell, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLayoutData(gridData);
 		table.setLinesVisible(true);
-		table.setHeaderVisible(true);	
+		table.setHeaderVisible(true);
+		//table.set
 		//table.setMenu(createPopUpMenu());	
 		table.addSelectionListener(new SelectionAdapter() {
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -156,9 +209,9 @@ public class MenuEditForm {
 				if (items.length > 0) {}//editEntry(items[0]);
 			}
 		});
-		for(int i = 0; i < columnNames.length; i++) {
+		for(int i = 0; i < columnLabels.length; i++) {
 			TableColumn column = new TableColumn(table, SWT.NONE);
-			column.setText(columnNames[i]);
+			column.setText(columnLabels[i]);
 			column.setWidth(150);
 			//final int columnIndex = i;
 			column.addSelectionListener(new SelectionAdapter() {		
@@ -168,6 +221,35 @@ public class MenuEditForm {
 				}
 			});
 		}
+		TableColumn[] colummm = table.getColumns();
+		colummm[0].setWidth(30);
+		colummm[1].setWidth(120);
+		//Button btt = new Button(shell, SWT.PUSH);
+		//btt.setText("8888");
+		//colummm[1].setData(new Button(shell, SWT.PUSH));
+		colummm[2].setWidth(100);
+		colummm[3].setWidth(150);
+		colummm[4].setWidth(50);
+		colummm[5].setWidth(90);
+	}
+	
+	void refreshTable(int indexCombo) {
+		//table.clearAll();
+		table.clearAll();
+		table.setItemCount(0);
+		currentMenuList = MenuItem.FindByCat(LunchyMain.menuList, indexCombo);
+		if (indexCombo == 0)
+			currentMenuList = new ArrayList<>(LunchyMain.menuList);
+		for (int i = 0; i < currentMenuList.size(); i++) {
+			String[] temp = new String[6];
+			TableItem item = new TableItem(table, SWT.NONE);
+			temp = currentMenuList.get(i).ToStrArr();
+			temp[2] = LunchyMain.categoryList.get(currentMenuList.get(i).getCategory()).getName();
+			temp[5] = currentMenuList.get(i).getAvail() ? "Доступен" : "Не доступен";
+			item.setText(temp);
+			//item.setForeground(clGreen);
+		}
+		//System.out.println(indexCombo);
 	}
 
 }
