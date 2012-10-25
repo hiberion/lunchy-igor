@@ -57,18 +57,29 @@
 	</target>
 	
 	<!-- Creating jar file -->
-	<target name="jar" depends="compile">
-		<jar destfile="${dist.dir}\Lunchy.jar" basedir="${build.dir}">
+	<target name="jar_x32" depends="compile">
+		<jar destfile="${dist.dir}\Lunchy_x32.jar" basedir="${build.dir}">
 			<manifest>
 				<attribute name="Main-Class" value="igor.lunchy.LunchyMain"/>
 			</manifest>
 			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/swt.jar"/>
+			<zipfileset dir="${src.dir}" includes="lunchy_en.properties"/>
 		</jar>
 	</target>
 	
+	<target name="jar_x64" depends="compile">
+			<jar destfile="${dist.dir}\Lunchy_x64.jar" basedir="${build.dir}">
+				<manifest>
+					<attribute name="Main-Class" value="igor.lunchy.LunchyMain"/>
+				</manifest>
+				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/swt_x64.jar"/>
+				<zipfileset dir="${src.dir}" includes="lunchy_en.properties"/>
+			</jar>
+		</target>
+	
 	<!-- Main Target -->
 	<!-- "docs" target must added later -->
-	<target name="Main Target" depends="compile, jar">
+	<target name="Main Target" depends="compile, jar_x32, jar_x64">
 		<description>Main Target</description>
 	</target>
 	

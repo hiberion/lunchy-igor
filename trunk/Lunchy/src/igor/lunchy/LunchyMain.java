@@ -5,11 +5,22 @@
 
 package igor.lunchy;
 
+
+//import java.io.*;
+import java.util.*;
+
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
+
+import entities.Category;
+import entities.MenuItem;
+import entities.Worker;
+import forms.*;
+import dao.*;
+
 
 
 public class LunchyMain {
@@ -18,26 +29,42 @@ public class LunchyMain {
 	public static String status = "";
 	public Label statusLabel;
 	
+	private static ResourceBundle resLunchy = ResourceBundle.getBundle("lunchy_en");
+	
+	public static ArrayList<MenuItem> menuList;
+	public static ArrayList<Category> categoryList;
+	public static ArrayList<Worker> workerList;
+	
 	
 	public static void main(String[] args) {
+		DAOFactory textfileDAOFactory = 
+				DAOFactory.getDAOFactory(DAOFactory.TEXTFILE);
+		
+		IMenuItemDAO menuitemDAO = textfileDAOFactory.getMenuItemDAO();
+		ICategoryDAO categoryDAO = textfileDAOFactory.getCategoryDAO();
+		IWorkerDAO workerDAO = textfileDAOFactory.getWorkerDAO();
+		
+		menuList = menuitemDAO.getMenuItemCol();
+		categoryList = categoryDAO.getCategoryCol();
+		workerList = workerDAO.getWorkerCol();
+		
+		System.out.println(menuList.size() + " " +
+				categoryList.size() + " " + workerList.size());
+		
+		if ((menuList.size() > 0) && (categoryList.size() > 0) && (workerList.size() > 0))
+			System.out.println("OK");
+		
+		//menuList.add(new MenuItem(MenuItem.curID++, "RR", 1, "D", 34.6, false));
+		
+		//boolean res4 = menuitemDAO.putMenuItemCol(menuList);
+		//boolean res5 = categoryDAO.putCategoryCol(categoryList);
+		//boolean res6 = workerDAO.putWorkerCol(workerList);		
+		
 		Display display = new Display();
 		LunchyMain application = new LunchyMain();
 		Shell shell = application.open(display);
-		System.out.println("OK");
-		/*
-		String[][] Data = ParseTextFile.getStringTable("menu.txt", "_", 6);
-		int i = 0;
-		System.out.println(Data.length);
-		for (String[] str: Data) {
-			for (String str2: str) {
-				System.out.print(str2 + " ");
-			}
-			System.out.println();
-		}
+		//System.out.println("OK");
 		
-		MenuEnrty[] menu = MenuEnrty.getMenuEntries("menu.txt");
-		System.out.println(menu[4].name);
-		*/
 		
 		while(!shell.isDisposed()){
 			if(!display.readAndDispatch())
@@ -72,43 +99,44 @@ public class LunchyMain {
 	
 	private void createControlButtons() {
 		Button btMenuEditor = new Button(shell, SWT.PUSH);
-		btMenuEditor.setText("Edit menu");
+		btMenuEditor.setText(resLunchy.getString("Edit_menu"));
 		btMenuEditor.setLayoutData(new RowData(170, 40));
 		btMenuEditor.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				openEditMenu();
+				openFormMenuListEdit();
 			}
 		});
 		
 		Button btOrder = new Button(shell, SWT.PUSH);
-		btOrder.setText("Make order");
+		btOrder.setText(resLunchy.getString("Make_order"));
 		btOrder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				//openEditMenu();
+				openFormOrderCreation();
 			}
 		});
 		
 		Button btSendOrder = new Button(shell, SWT.PUSH);
-		btSendOrder.setText("Send Order");
+		btSendOrder.setText(resLunchy.getString("Send_order"));
 		btSendOrder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				//openEditMenu();
+				openFormOrderSending();
 			}
 		});
 		
 		Button btPrint = new Button(shell, SWT.PUSH);
-		btPrint.setText("Print Order");
+		btPrint.setText(resLunchy.getString("Print_order"));
 		btPrint.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				//openEditMenu();
+				System.out.println("Printing the order");
 			}
 		});
 		
 		Button btOptions = new Button(shell, SWT.PUSH);
-		btOptions.setText("Options");
+		btOptions.setText(resLunchy.getString("Options"));
 		btOptions.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				//openEditMenu();
+				openFormAppOptions();
 			}
 		});
 		
@@ -123,10 +151,25 @@ public class LunchyMain {
 		//return statusLabel;
 	}
 	
-	private void openEditMenu() {
+	private void openFormMenuListEdit() {
 		//System.out.println("All OK");
-		MenuEditForm menuForm = new MenuEditForm(shell);
+		FormMenuListEdit menuForm = new FormMenuListEdit(shell);
 		menuForm.open();
+	}
+	
+	private void openFormOrderCreation() {
+		FormOrderCreation orderForm = new FormOrderCreation(shell);
+		orderForm.open();
+	}
+	
+	private void openFormOrderSending() {
+		FormOrderSending orderSendingForm = new FormOrderSending(shell);
+		orderSendingForm.open();
+	}
+	
+	private void openFormAppOptions() {
+		FormAppOptions optionsForm = new FormAppOptions(shell);
+		optionsForm.open();
 	}
 	
 	
