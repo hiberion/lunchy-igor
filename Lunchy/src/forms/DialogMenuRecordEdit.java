@@ -4,6 +4,7 @@ package forms;
 
 import igor.lunchy.LunchyMain;
 
+import java.awt.event.FocusAdapter;
 import java.util.ResourceBundle;
 
 import org.eclipse.swt.*;
@@ -13,6 +14,7 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 import entities.Category;
+import entities.MenuItem;
 
 public class DialogMenuRecordEdit {
 	Shell shell;
@@ -24,39 +26,42 @@ public class DialogMenuRecordEdit {
 								resLunchy.getString("Price"),
 								resLunchy.getString("Menu_aval")
 								};
-	String[] values;
+	MenuItem currentMenuItem;
+	int changesCategory = 1;
+	static final int ITEM_CHANGED = 1;
+	static final int CANCELED = 2;
+	//static final int MODIFIED = 1;
+	int state;  // menu item state	
+	boolean changesAvailability = true;
+	
+	public void setState(int state) {
+		this.state = state;
+	}
+	
+	public int getState() {
+		return state;
+	}
 	
 	public DialogMenuRecordEdit(Shell parent) {
 		shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
-		shell.setText("Menu Entry Editor");
 		shell.setImage(new Image(shell.getDisplay(), "icon2.jpg"));
 	}
 	
-	private void addTextListener(final Text text) {
-		text.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e){
-				Integer index = (Integer)(text.getData("index"));
-				values[index.intValue()] = text.getText();
-			}
-		});
-	}
-	
-	public String[] open() {
-		//createTextWidgets();
-		//createControlButtons();
-		//shell.pack();
+	public void open() {
+		if (currentMenuItem == null)
+				return;
 		createWidgets();
-		//setTitle("New menu entry");
 		
 		shell.pack();
 		shell.open();
+		
+		//System.out.println(values[0]+" "+values[1]+" "+values[2]+" "+values[3]+" "+values[4]+" "+values[5]);
+		
 		Display display = shell.getDisplay();
 		while(!shell.isDisposed()){
 			if(!display.readAndDispatch())
 				display.sleep();
 		}
-		
-		return values;
 	}
 	
 	public void createWidgets() {
@@ -65,88 +70,140 @@ public class DialogMenuRecordEdit {
 		shell.setLayout(layout);
 		GridData gridData = new GridData();
 		
-		if (values == null)
-			values = new String[columnLabels.length];
+		// ID fields   "0"
+		Label labelID = new Label(shell, SWT.RIGHT);
+		labelID.setText(columnLabels[0]);
 		
-		//MenuEntry entry = null;
+		Text textID = new Text(shell, SWT.BORDER);
+		gridData = new GridData();
+		gridData.widthHint = 400;
+		textID.setLayoutData(gridData);
+		textID.setEnabled(false);
+		textID.setText(String.valueOf(currentMenuItem.getID()));
+		textID.setData("index", new Integer(0));
+		/////////////////////////////
 		
-		//Field[] fields = entry.getClass().getDeclaredFields();
-		//System.out.println(columnName);		
-		//for (Field field: entry.getClass().getDeclaredFields()) {
-			//Column column = field.getAnnotation(Column.class);
-			//String columnName = column != null ? column.name() : field.getName();
-		
-			/*
-			Label label = new Label(shell, SWT.RIGHT);
-			label.setText(columnName);	
-			Text text = new Text(shell, SWT.BORDER);
-			gridData = new GridData();
-			gridData.widthHint = 400;
-			text.setLayoutData(gridData);
-			text.setText(field.getName());
-			text.setText(field.get(entry).toString());
-			addTextListener(text);
-			*/
-		//}
-		
-		
-		for (int i = 0; i < columnLabels.length; i++) {
-			if (i == 2) {
-				Label label = new Label(shell, SWT.RIGHT);
-				label.setText(columnLabels[i]);
-				
-				Combo categoryCombo = new Combo(shell, SWT.NONE);
-				String[] comboData = new String[LunchyMain.categoryList.size()];
-				for (Category cat: LunchyMain.categoryList) {
-					comboData[cat.getID()] = cat.getName();
+		// Name fields  "1"
+		Label labelName = new Label(shell, SWT.RIGHT);
+		labelName.setText(columnLabels[1]);	
+		final Text textName = new Text(shell, SWT.BORDER);
+		gridData = new GridData();
+		gridData.widthHint = 400;
+		textName.setLayoutData(gridData);
+		textName.setTextLimit(30);
+		textName.setText(currentMenuItem.getName());
+		textName.setData("index", new Integer(1));
+		textName.addListener (SWT.Verify, new Listener () {
+			public void handleEvent (Event e) {
+				String string = e.text;
+				if (string.indexOf("_") != -1)
+				{
+					displayError(resLunchy.getString("Input_error1"));
+					e.doit = false;
+					return;
 				}
-				categoryCombo.setItems(comboData);
-				if (values[0] != null)
-					categoryCombo.select(LunchyMain.menuList.get(Integer.parseInt(values[0])).getCategory());
+			}
+		});
+		/*
+		textName.add(new ModifyListener() {
+			public void modifyText(ModifyEvent e){
+				Integer index = (Integer)(text.getData("index"));
+				values[index.intValue()] = text.getText();
+			}
+		});
+		*/
+		//addTextListener(textName);
+		///////////////////
+		
+		// Category fields  "2"
+		Label labelCat = new Label(shell, SWT.RIGHT);
+		labelCat.setText(columnLabels[2]);
+		
+		final Combo categoryCombo = new Combo(shell, SWT.NONE | SWT.READ_ONLY);
+		// Вариант "Все категории" должен быть не доступен
+		String[] comboData = new String[LunchyMain.categoryList.size()-1];
+		for (Category cat: LunchyMain.categoryList) {
+			if (cat.getID() == 0)   // ID = 0 имеет "Все категории"
 				continue;
-			}
-			
-			if (i == 5) {
-				Label label = new Label(shell, SWT.RIGHT);
-				label.setText(columnLabels[i]);
-				
-				Button availButton = new Button(shell, SWT.CHECK);
-				availButton.setSelection(LunchyMain.menuList.get(Integer.parseInt(values[0])-1).getAvail());
-				//if (values[0] != null)
-					//categoryCombo.select(LunchyMain.menuList.get(Integer.parseInt(values[0])).getCategory());
-				continue;
-			}
-			
-			if (i == 0) {
-				Label label = new Label(shell, SWT.RIGHT);
-				label.setText(columnLabels[i]);
-				
-				Text text = new Text(shell, SWT.BORDER);
-				gridData = new GridData();
-				gridData.widthHint = 400;
-				text.setLayoutData(gridData);
-				text.setEnabled(false);
-				if (values[i] != null) {
-					text.setText(values[i]);
-				}
-				text.setData("index", new Integer(i));
-				addTextListener(text);
-				continue;
-			}
-			
-			Label label = new Label(shell, SWT.RIGHT);
-			label.setText(columnLabels[i]);	
-			Text text = new Text(shell, SWT.BORDER);
-			gridData = new GridData();
-			gridData.widthHint = 400;
-			text.setLayoutData(gridData);
-			if (values[i] != null) {
-				text.setText(values[i]);
-			}
-			text.setData("index", new Integer(i));
-			addTextListener(text);
+			else
+				comboData[cat.getID()-1] = cat.getName();
 		}
+		categoryCombo.setItems(comboData);
+		categoryCombo.select(currentMenuItem.getCategory()-1);
+		categoryCombo.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				//System.out.println("Combo");
+				changesCategory = categoryCombo.getSelectionIndex()+1;
+				//currentMenuItem.setCategory(categoryCombo.getSelectionIndex()+1);
+			}
+		});
 		
+		//Display.getCurrent().post(arg0)
+		/////////////////////
+		
+		// Description fields  "3"
+		Label labelDescr = new Label(shell, SWT.RIGHT);
+		labelDescr.setText(columnLabels[3]);	
+		final Text textDescr = new Text(shell, SWT.BORDER);
+		gridData = new GridData();
+		gridData.widthHint = 400;
+		textDescr.setLayoutData(gridData);
+		textDescr.setTextLimit(80);
+		textDescr.setText(currentMenuItem.getDescr());
+		textDescr.setData("index", new Integer(3));
+		textDescr.addListener (SWT.Verify, new Listener () {
+			public void handleEvent (Event e) {
+				String string = e.text;
+				if (string.indexOf("_") != -1)
+				{
+					displayError(resLunchy.getString("Input_error1"));
+					e.doit = false;
+					return;
+				}
+			}
+		});
+		//addTextListener(textDescr);
+		///////////////////////
+		
+		// Price fields    "4"
+		Label labelPrice = new Label(shell, SWT.RIGHT);
+		labelPrice.setText(columnLabels[4]);	
+		final Text textPrice = new Text(shell, SWT.BORDER);
+		gridData = new GridData();
+		gridData.widthHint = 400;
+		textPrice.setLayoutData(gridData);
+		textPrice.setText(String.valueOf(currentMenuItem.getPrice()));
+		textPrice.setData("index", new Integer(4));
+		textPrice.addListener (SWT.Verify, new Listener () {
+			public void handleEvent (Event e) {
+				String string = e.text;
+				char [] chars = new char[string.length()];
+				string.getChars(0, chars.length, chars, 0);
+				for (int i=0; i<chars.length; i++) {
+					if (!(('0' <= chars[i] && chars[i] <= '9') | chars[i] == '.')) {
+						e.doit = false;
+						return;
+					}
+				}
+			}
+		});
+		//addTextListener(textPrice);
+		////////////////////////// 
+		
+		// Availability fields   "5"
+		Label labelAv = new Label(shell, SWT.RIGHT);
+		labelAv.setText(columnLabels[5]);
+		
+		final Button availButton = new Button(shell, SWT.CHECK);
+		availButton.setSelection(currentMenuItem.getAvail());
+		availButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				//System.out.println("Combo");
+				changesAvailability = availButton.getSelection();
+				//currentMenuItem.setAvail(availButton.getSelection());
+			}
+		});
+		//////////////////////////
 		
 		Button btOK = new Button(shell, SWT.PUSH);
 		gridData = new GridData();
@@ -165,7 +222,38 @@ public class DialogMenuRecordEdit {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				DialogMenuRecordEdit.this.shell.close();
+				// Store MenuItem Name
+				String str = textName.getText().trim();
+				if (textName.getText().length() == 0) {
+					displayError(resLunchy.getString("Empty_name_error"));
+					return;
+				} else currentMenuItem.setName(str);
+				
+				// Store MenuItem Category
+				changesCategory = categoryCombo.getSelectionIndex()+1;
+				currentMenuItem.setCategory(changesCategory);
+				
+				// Store MenuItem Availability
+				changesAvailability = availButton.getSelection();
+				currentMenuItem.setAvail(changesAvailability);
+				
+				// Store MenuItem Description
+				str = textDescr.getText().trim();
+				currentMenuItem.setDescr(str);
+				
+				// Store MenuItem Price
+				double d;
+				try {
+					d = Double.parseDouble(textPrice.getText());
+				} catch (Exception e) {
+					displayError(resLunchy.getString("Nan_error"));
+					return;
+				}
+				currentMenuItem.setPrice(d);
+				
+				setState(ITEM_CHANGED);
+				//System.out.println("ok");
+				shell.close();
 			}
 		});
 		
@@ -175,17 +263,24 @@ public class DialogMenuRecordEdit {
 		//gridData.horizontalSpan = 2;
 		btCancel.setText("Cancel");
 		btCancel.setLayoutData(gridData);
+		btCancel.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				//values = null;
+				setState(CANCELED);
+				System.out.println("cancel");
+				shell.close();
+			}
+		});
+		
+		shell.setDefaultButton(btOK);
+	}
+	public void setEditableMenuItem(MenuItem mi) {
+		currentMenuItem = mi;
 	}
 	
-	public String[] getLabels() {
-		return columnLabels;
-	}
+	
 	public String getTitle() {
 		return shell.getText();
-	}
-	
-	public String[] getValues() {
-		return values;
 	}
 	
 	public void setLabels(String[] labels) {
@@ -195,16 +290,10 @@ public class DialogMenuRecordEdit {
 		shell.setText(title);
 	}
 	
-	public void setValues(String[] itemInfo) {
-		if (columnLabels == null) return;
-		
-		if (values == null)
-			values = new String[columnLabels.length];
-
-		int numItems = Math.min(values.length, itemInfo.length);
-		for(int i = 0; i < numItems; i++) {
-			values[i] = itemInfo[i];
-		}	
+	private void displayError(String msg) {
+		MessageBox box = new MessageBox(shell, SWT.ICON_ERROR);
+		box.setMessage(msg);
+		box.open();
 	}
 }
 

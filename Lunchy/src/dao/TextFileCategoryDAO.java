@@ -21,9 +21,7 @@ public class TextFileCategoryDAO implements ICategoryDAO {
 		for (String[] line: Data) {
 			tempID = Integer.parseInt(line[0]);
 			tempName = line[1];
-			
 			result.add(new Category(tempID, tempName));
-			
 			if (tempID > maxId) {
 				maxId = tempID;
 			}
@@ -31,6 +29,7 @@ public class TextFileCategoryDAO implements ICategoryDAO {
 		
 		Category.initId(maxId + 1);
 		
+		Category.initId(result.size());
 		return result;
 	}
 
@@ -39,7 +38,7 @@ public class TextFileCategoryDAO implements ICategoryDAO {
 		int colSize = categoryCol.size();
 		String[][] r1 = new String[colSize][2];
 		for (int i = 0; i < colSize; i++) {
-			r1[i] = categoryCol.get(i).ToStrArr();
+			r1[i] = categoryCol.get(i).toStringArray();
 		}
 		
 		boolean result = ParseTextFile.putStringTableToFile(fileName, r1);

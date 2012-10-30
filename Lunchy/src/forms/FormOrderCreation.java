@@ -22,10 +22,11 @@ public class FormOrderCreation {
 	Shell shell;
 	private Table tableMenu;
 	private Table tableOrder;
-	String[] columnMenuNames = {"Name", "Category", "Description", "Price"};
-	String[] columnOrderNames = {"Name", "Category", "Price", "Quantity"};
+	String[] columnMenuNames = {"ID", "Name", "Category", "Description", "Price"};
+	String[] columnOrderNames = {"ID", "Name", "Category", "Price", "Quantity"};
+	Spinner quantitySpinner;
 	
-	ArrayList<MenuItem> currentMenuList = MenuItem.FindByAvail(LunchyMain.menuList, true);
+	ArrayList<MenuItem> currentMenuList = MenuItem.findByAvail(LunchyMain.menuList, true);
 	
 	public FormOrderCreation(Shell parent) {
 		shell = new Shell(parent, SWT.SHELL_TRIM);
@@ -44,14 +45,15 @@ public class FormOrderCreation {
 		
 		for (int i = 0; i < currentMenuList.size(); i++) {
 			String[] temp = new String[6];
-			String[] res = new String[4];
+			String[] res = new String[5];
 			TableItem item = new TableItem(tableMenu, SWT.NONE);
 			temp = currentMenuList.get(i).toStringArray();
 			temp[2] = LunchyMain.categoryList.get(currentMenuList.get(i).getCategory()).getName();
-			res[0] = temp[1];
-			res[1] = temp[2];
-			res[2] = temp[3];
-			res[3] = temp[4];
+			res[0] = temp[0];
+			res[1] = temp[1];
+			res[2] = temp[2];
+			res[3] = temp[3];
+			res[4] = temp[4];
 			item.setText(res);
 			//item.setForeground(clGreen);
 		}
@@ -143,7 +145,20 @@ public class FormOrderCreation {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				TableItem[] items = tableMenu.getSelection();
 				if (items.length > 0) {}//editEntry(items[0]);
-				System.out.println("Double Click");
+				
+				String[] temp = new String[6];
+				String[] res = new String[5];
+				TableItem item = new TableItem(tableOrder, SWT.NONE);
+				temp = LunchyMain.menuList.get(Integer.parseInt(items[0].getText(0))).toStringArray();
+				temp[2] = LunchyMain.categoryList.get(LunchyMain.menuList.get(Integer.parseInt(items[0].getText(0))).getCategory()).getName();
+				res[0] = temp[0];
+				res[1] = temp[1];
+				res[2] = temp[2];
+				res[3] = temp[4];
+				res[4] = "1";
+				item.setText(res);
+				
+				//System.out.println("Double Click");
 			}
 		});
 		for(int i = 0; i < columnMenuNames.length; i++) {
@@ -160,10 +175,14 @@ public class FormOrderCreation {
 		}
 		
 		TableColumn[] columsMenuTable = tableMenu.getColumns();
-		columsMenuTable[0].setWidth(120);
+		columsMenuTable[0].setWidth(50);
 		columsMenuTable[1].setWidth(120);
-		columsMenuTable[2].setWidth(150);
-		columsMenuTable[3].setWidth(80);
+		columsMenuTable[2].setWidth(120);
+		columsMenuTable[3].setWidth(150);
+		columsMenuTable[4].setWidth(80);
+		
+		//columsMenuTable[0].setWidth(0);
+		//columsMenuTable[0].setResizable(false);
 		
 		// Buttons between menuGroup and orderGroup
 		Button addButton = new Button(shell, SWT.PUSH);
@@ -173,6 +192,24 @@ public class FormOrderCreation {
 		gridData.horizontalAlignment = GridData.FILL;
 		addButton.setText("Add to Order");
 		addButton.setLayoutData(gridData);
+		addButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				TableItem[] items = tableMenu.getSelection();
+				if (items.length > 0) {}//editEntry(items[0]);
+				
+				String[] temp = new String[6];
+				String[] res = new String[5];
+				TableItem item = new TableItem(tableOrder, SWT.NONE);
+				temp = LunchyMain.menuList.get(Integer.parseInt(items[0].getText(0))).toStringArray();
+				temp[2] = LunchyMain.categoryList.get(LunchyMain.menuList.get(Integer.parseInt(items[0].getText(0))).getCategory()).getName();
+				res[0] = temp[0];
+				res[1] = temp[1];
+				res[2] = temp[2];
+				res[3] = temp[4];
+				res[4] = quantitySpinner.getText();
+				item.setText(res);
+			}
+		});
 		
 		// orderGroup (workerLabel, workerCombo, tableOrder)
 		Group orderGroup = new Group(shell, SWT.NONE);
@@ -202,7 +239,7 @@ public class FormOrderCreation {
 			comboData[wr.getID()] = wr.getName();
 		}
 		workerCombo.setItems(comboData);
-		workerCombo.select(0);
+		workerCombo.select(6);
 		
 		// orderGroup
 		tableOrder = new Table(orderGroup, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION);
@@ -221,6 +258,7 @@ public class FormOrderCreation {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				TableItem[] items = tableOrder.getSelection();
 				if (items.length > 0) {}//editEntry(items[0]);
+				
 				System.out.println("Double Click");
 			}
 		});
@@ -237,10 +275,11 @@ public class FormOrderCreation {
 			});
 		}
 		TableColumn[] columsOrderTable = tableOrder.getColumns();
-		columsOrderTable[0].setWidth(120);
+		columsOrderTable[0].setWidth(50);
 		columsOrderTable[1].setWidth(120);
-		columsOrderTable[2].setWidth(50);
-		columsOrderTable[3].setWidth(60);
+		columsOrderTable[2].setWidth(120);
+		columsOrderTable[3].setWidth(50);
+		columsOrderTable[4].setWidth(60);
 		
 		// Group between menuGroup and orderGroup
 		Group quantityGroup = new Group(shell, SWT.NONE);
@@ -254,7 +293,7 @@ public class FormOrderCreation {
 		quantityGroup.setLayoutData(gridData);
 		
 		// quantityGroup
-		Spinner quantitySpinner = new Spinner(quantityGroup, SWT.BORDER);
+		quantitySpinner = new Spinner(quantityGroup, SWT.BORDER);
 		quantitySpinner.setMinimum(1);
 		quantitySpinner.setMaximum(10);
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
@@ -311,7 +350,7 @@ public class FormOrderCreation {
 		if (indexCombo == 0) {
 			tempMenuList = new ArrayList<>(currentMenuList);
 		} else {
-			tempMenuList = MenuItem.FindByCat(currentMenuList, indexCombo);
+			tempMenuList = MenuItem.findByCat(currentMenuList, indexCombo);
 		}
 		
 					

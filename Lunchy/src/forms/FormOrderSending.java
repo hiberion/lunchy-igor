@@ -23,30 +23,7 @@ public class FormOrderSending {
 		shell.setText("Sending order");
 		shell.setImage(new Image(shell.getDisplay(), "icon2.jpg"));
 	}
-	
-	private void newMenuEntry() {
-		DialogMenuRecordEdit dialog = new DialogMenuRecordEdit(shell);
-		String[] data = dialog.open();
-		if (data != null) {
-			TableItem item = new TableItem(table, SWT.NONE);
-			item.setText(data);
-			//isModified = true;
-		}
-	}
-	
-	private void editMenuEntry(TableItem item) {
-		DialogMenuRecordEdit dialog = new DialogMenuRecordEdit(shell);
-		String[] values = new String[table.getColumnCount()];
-		for (int i = 0; i < values.length; i++) {
-			values[i] = item.getText(i);
-		}
-		dialog.setValues(values);
-		values = dialog.open();
-		if (values != null) {
-			item.setText(values);
-			//isModified = true;
-		}
-	}
+
 	
 	public void open() {
 		//createTextWidgets();
