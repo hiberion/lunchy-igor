@@ -32,8 +32,7 @@ public class Category {
 	}
 	
 	public String toString() {
-		String[] p = toStringArray(); // in-between result
-		return p[0]+" "+p[1];
+		return String.valueOf(ID)+" "+name;
 	}
 	
 	

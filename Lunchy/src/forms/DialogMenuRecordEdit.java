@@ -217,7 +217,7 @@ public class DialogMenuRecordEdit {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
 				// TODO Auto-generated method stub
-				
+				//http://www.java2s.com/Code/Java/SWT-JFace-Eclipse/UIAutomationfortestingtoolssnippetpostkeyevents.htm
 			}
 
 			@Override
