@@ -6,23 +6,13 @@ import igor.lunchy.Column;
 public class MenuItem {
 	@Column(name = "ID")
 	private int ID;
-	
-	@Column(name = "Name")
 	private String name = "";
-	
-	@Column(name = "Category")
 	private int category = 0;
-	
-	@Column(name = "Description")
 	private String descript = "";
-	
-	@Column(name = "Price")
 	private double price = 0.0;
-	
-	@Column(name = "Availability")
 	private boolean avail = true;
-	
-	public static int curID = 1;
+
+	private static int curID = 1;
 	
 	public double getPrice() {
 		return price;
@@ -68,17 +58,16 @@ public class MenuItem {
 		this.category = cat;
 	}
 	
-	
 	public MenuItem(int id, String name, int cat, String desc, double price,  boolean avail) {
 		this.ID = id;
-		this.name = new String(name);
+		this.name = name;
 		this.category = cat;
-		this.descript = new String(desc);
+		this.descript = desc;
 		this.price = price;
 		this.avail = avail;	
 	}
 	
-	static public ArrayList<MenuItem> ByName(ArrayList<MenuItem> inAr, String name) {
+	static public ArrayList<MenuItem> byName(ArrayList<MenuItem> inAr, String name) {
 		ArrayList<MenuItem> result = new ArrayList<>();
 		for (MenuItem mi: inAr) {
 			if (mi.getName().equals(name))
@@ -87,7 +76,7 @@ public class MenuItem {
 		return result;
 	}
 	
-	static public ArrayList<MenuItem> FindByCat(ArrayList<MenuItem> inAr, int cat) {
+	static public ArrayList<MenuItem> findByCat(ArrayList<MenuItem> inAr, int cat) {
 		ArrayList<MenuItem> result = new ArrayList<>();
 		for (MenuItem mi: inAr) {
 			if (mi.getCategory() == cat)
@@ -96,7 +85,7 @@ public class MenuItem {
 		return result;
 	}
 	
-	static public ArrayList<MenuItem> FindByAvail(ArrayList<MenuItem> inAr, boolean av) {
+	static public ArrayList<MenuItem> findByAvail(ArrayList<MenuItem> inAr, boolean av) {
 		ArrayList<MenuItem> result = new ArrayList<>();
 		for (MenuItem mi: inAr) {
 			if (mi.getAvail() == av)
@@ -108,29 +97,17 @@ public class MenuItem {
 	public String[] toStringArray() {
 		String[] result = new String[6];
 		result[0] = String.valueOf(ID);
-		result[1] = new String(name);
+		result[1] = name;
 		result[2] = String.valueOf(category);
-		result[3] = new String(descript);
+		result[3] = descript;
 		result[4] = String.valueOf(price);
 		result[5] = avail ? "Y" : "N";
 		return result;		
 	}
 	
 	public String toString() {
-		String[] array = toStringArray();
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append(array[0]).append(" ").append(array[1]);
-		
-		return sb.toString();
-	}
-	
-	public String ToStr() {
-		String result;
-		String[] array = toStringArray();
-		result = array[0] + " " + toStringArray()[1] + " " + toStringArray()[2] + " " +
-				toStringArray()[3] + " " + toStringArray()[4] + " " + toStringArray()[5];
-		return result;
+		String[] p = toStringArray(); // in-between result
+		return p[0]+" "+p[1]+" "+p[2]+" "+p[3]+" "+p[4]+" "+p[5];
 	}
 	
 	public MenuItem() {
@@ -141,6 +118,14 @@ public class MenuItem {
 		descript = "Description";
 		price = 0.0;
 		avail = true;
+	}
+	
+	public synchronized static int newId() {
+		return curID++;
+	}
+
+	public synchronized static void initId(int maxId) {
+		curID = maxId;
 	}
 
 }

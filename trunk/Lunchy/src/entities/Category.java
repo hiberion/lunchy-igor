@@ -4,7 +4,7 @@ public class Category {
 	private int ID;
 	private String name;
 	
-	public static int curID = 1;
+	private static int curID = 1;
 	
 	public Category(int id, String name) {
 		ID = id;
@@ -24,17 +24,16 @@ public class Category {
 		return name;
 	}
 	
-	public String[] ToStrArr() {
+	public String[] toStringArray() {
 		String[] result = new String[2];
 		result[0] = String.valueOf(ID);
-		result[1] = new String(name);
+		result[1] = name;
 		return result;		
 	}
 	
-	public String ToStr() {
-		String result;
-		result = ToStrArr()[0] + " " + ToStrArr()[1];
-		return result;
+	public String toString() {
+		String[] p = toStringArray(); // in-between result
+		return p[0]+" "+p[1];
 	}
 	
 	

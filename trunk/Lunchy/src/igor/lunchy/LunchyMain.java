@@ -7,6 +7,10 @@ package igor.lunchy;
 
 
 //import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 import org.eclipse.swt.*;
@@ -28,15 +32,43 @@ public class LunchyMain {
 	private Shell shell;
 	public static String status = "";
 	public Label statusLabel;
+	public static int lang = 2;
 	
-	private static ResourceBundle resLunchy = ResourceBundle.getBundle("lunchy_en");
+	private static Properties options;
 	
+	// Reading resource file 
+	private static ResourceBundle resLunchy = (lang == 1) ? ResourceBundle.getBundle("lunchy_ru") :
+		ResourceBundle.getBundle("lunchy_en");
+	
+	// Work data
 	public static ArrayList<MenuItem> menuList;
 	public static ArrayList<Category> categoryList;
-	public static ArrayList<Worker> workerList;
+	public static ArrayList<Worker> workerList;	
+	
+	private static Properties initOptions() throws IOException {
+		Properties props = new Properties();
+		FileInputStream fin = null;
+		FileOutputStream fout = null;
+		try {
+			fin = new FileInputStream("options.dat");
+		} catch (FileNotFoundException e) {
+			System.out.println("File not exist");
+			fout = new FileOutputStream("options.dat");
+		}
+		
+		
+		return props;
+	}
 	
 	
 	public static void main(String[] args) {
+		try {
+			initOptions();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		DAOFactory textfileDAOFactory = 
 				DAOFactory.getDAOFactory(DAOFactory.TEXTFILE);
 		
@@ -50,13 +82,17 @@ public class LunchyMain {
 		
 		System.out.println(menuList.size() + " " +
 				categoryList.size() + " " + workerList.size());
+		//System.out.println(MenuItem.newId());
 		
 		if ((menuList.size() > 0) && (categoryList.size() > 0) && (workerList.size() > 0))
 			System.out.println("OK");
 		
-		//menuList.add(new MenuItem(MenuItem.curID++, "RR", 1, "D", 34.6, false));
+		//menuList.add(new MenuItem(MenuItem.newId(), "444", 1, "D", 34.6, false));
+		//menuList.add(new MenuItem(MenuItem.newId(), "555", 2, "A", 34.6, true));
+		//categoryList.add(new Category(Category.newId(), "ttt"));
+		//menuList.set(5, new MenuItem(5, "777", 1, "777", 34.6, false));
 		
-		//boolean res4 = menuitemDAO.putMenuItemCol(menuList);
+		boolean res4 = menuitemDAO.putMenuItemCol(menuList);
 		//boolean res5 = categoryDAO.putCategoryCol(categoryList);
 		//boolean res6 = workerDAO.putWorkerCol(workerList);		
 		
@@ -71,6 +107,8 @@ public class LunchyMain {
 				display.sleep();
 		}
 		display.dispose();
+		
+		menuitemDAO.putMenuItemCol(menuList);
 			
 	}
 	

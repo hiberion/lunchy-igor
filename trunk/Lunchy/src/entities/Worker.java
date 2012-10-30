@@ -4,11 +4,11 @@ public class Worker {
 	private int ID;
 	private String fullName;
 	
-	public static int curID = 1;
+	private static int curID = 1;
 	
 	public Worker(int id, String fullName) {
 		ID = id;
-		this.fullName = new String(fullName);
+		this.fullName = fullName;
 	}
 	
 	public int getID() {
@@ -19,17 +19,24 @@ public class Worker {
 		return fullName;
 	}
 	
-	public String[] ToStrArr() {
+	public String[] toStringArray() {
 		String[] result = new String[2];
 		result[0] = String.valueOf(ID);
-		result[1] = new String(fullName);
+		result[1] = fullName;
 		return result;		
 	}
 	
-	public String ToStr() {
-		String result;
-		result = ToStrArr()[0] + " " + ToStrArr()[1];
-		return result;
+	public String toString() {
+		String[] p = toStringArray(); // in-between result
+		return p[0]+" "+p[1];
+	}
+	
+	public synchronized static int newId() {
+		return curID++;
+	}
+
+	public synchronized static void initId(int maxId) {
+		curID = maxId;
 	}
 	
 }
