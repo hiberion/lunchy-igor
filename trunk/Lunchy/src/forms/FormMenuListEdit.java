@@ -20,14 +20,17 @@ import entities.MenuItem;
 
 public class FormMenuListEdit {
 	
-	Shell shell;
-	private Table table;
-	private int lastSortColumn= -1;  // For sort method
-	private Combo categoryCombo;   // Category of Menu
-	Color clGreen = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
-	Color clRed = Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
-	Color clDarkGrey = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
-	Font fontBold = new Font(Display.getCurrent(), "Arial", 14, SWT.BOLD);
+	private Shell 	shell;
+	private Table 	table;
+	private int 	lastSortColumn	= -1;   // For sort method
+	private Combo 	categoryCombo;   		// Category of Menu
+	private Color 	clGreen 		= Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);	
+	private Color 	clRed 			= Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
+	
+	//asdasdasdasdas
+	private Color clDarkGrey = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
+	
+	private Font 	fontBold 		= new Font(Display.getCurrent(), "Arial", 14, SWT.BOLD);
 	
 	private static ResourceBundle resLunchy = (LunchyMain.lang == 1) ? ResourceBundle.getBundle("lunchy_ru") :
 		ResourceBundle.getBundle("lunchy_en");
@@ -53,14 +56,18 @@ public class FormMenuListEdit {
 	private void newMenuEntry() {
 		DialogMenuRecordEdit dialog = new DialogMenuRecordEdit(shell);
 		int currentMenuListSize = LunchyMain.menuList.size();
+		
 		MenuItem.initId(currentMenuListSize);
 		int currentCategory = categoryCombo.getSelectionIndex();
+		
 		if (currentCategory == 0)
 			currentCategory = 1;  // Specify Category
+		
 		MenuItem newMenuItem = new MenuItem(MenuItem.newId(),"Input name",currentCategory,"",0.0, false);
 		dialog.setEditableMenuItem(newMenuItem);
 		dialog.setTitle(resLunchy.getString("New_menu_item"));
 		dialog.open();
+		
 		if (dialog.getState() == DialogMenuRecordEdit.ITEM_CHANGED) {
 			LunchyMain.menuList.add(newMenuItem);
 			refreshTable(categoryCombo.getSelectionIndex());
@@ -73,6 +80,7 @@ public class FormMenuListEdit {
 		dialog.setEditableMenuItem(LunchyMain.menuList.get(Integer.parseInt(item.getText(0))));
 		dialog.setTitle(resLunchy.getString("Edit_menu_item"));
 		dialog.open();
+		
 		if (dialog.getState() == DialogMenuRecordEdit.ITEM_CHANGED) {
 			refreshTable(categoryCombo.getSelectionIndex());
 			//isModified = true;
@@ -193,9 +201,11 @@ public class FormMenuListEdit {
 		for (Category cat: LunchyMain.categoryList) {
 			comboData[cat.getID()] = cat.getName();
 		}
+		
 		categoryCombo.setItems(comboData);
 		categoryCombo.select(0);
 		gridData = new GridData();
+		
 		//categoryCaption.setText("Menu category: ");
 		//gridData.minimumWidth = 10;
 		categoryCombo.setLayoutData(gridData);
@@ -213,6 +223,7 @@ public class FormMenuListEdit {
 		gridData.verticalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = true;
+		
 		table = new Table(shell, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLayoutData(gridData);
 		table.setLinesVisible(true);
@@ -226,6 +237,7 @@ public class FormMenuListEdit {
 					editMenuEntry(items[0]);
 			}
 		});
+		
 		for(int i = 0; i < columnLabels.length; i++) {
 			TableColumn column = new TableColumn(table, SWT.NONE);
 			column.setText(columnLabels[i]);
@@ -238,6 +250,7 @@ public class FormMenuListEdit {
 				}
 			});
 		}
+		
 		TableColumn[] colummm = table.getColumns();
 		colummm[0].setWidth(70);
 		colummm[1].setWidth(140);
