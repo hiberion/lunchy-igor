@@ -65,6 +65,7 @@
 			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/swt.jar"/>
 			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/postgresql-9.1-901.jdbc4.jar"/>
 			<zipfileset dir="${src.dir}" includes="lunchy_en.properties"/>
+			<zipfileset dir="${src.dir}" includes="lunchy_ru.properties"/>
 		</jar>
 	</target>
 	
@@ -76,6 +77,7 @@
 				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/swt_x64.jar"/>
 				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/postgresql-9.1-901.jdbc4.jar"/>
 				<zipfileset dir="${src.dir}" includes="lunchy_en.properties"/>
+				<zipfileset dir="${src.dir}" includes="lunchy_ru.properties"/>
 			</jar>
 		</target>
 	
