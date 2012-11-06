@@ -14,6 +14,7 @@ public class MenuItem {
 
 	private static int curID = 1;
 	
+	
 	public double getPrice() {
 		return price;
 	}

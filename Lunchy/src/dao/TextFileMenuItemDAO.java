@@ -10,9 +10,16 @@ import entities.MenuItem;
 
 public class TextFileMenuItemDAO implements IMenuItemDAO {
 	
-	String fileName = "Data/menu.txt";
-	@Override
-	public ArrayList<MenuItem> getMenuItemCol() {
+	private ArrayList<MenuItem> collection;
+	private String fileName;
+	
+	
+	public TextFileMenuItemDAO(String fileName) {
+		this.fileName = fileName;
+		collection = getMenuItemCollection(fileName);
+	}
+	
+	private ArrayList<MenuItem> getMenuItemCollection(String fileName) {
 		int tempID;
 		String tempName;
 		int tempCategory;
@@ -42,7 +49,7 @@ public class TextFileMenuItemDAO implements IMenuItemDAO {
 		return result;
 	}
 	
-	public boolean putMenuItemCol(ArrayList<MenuItem> menuItemCol) {
+	private boolean putMenuItemCol(ArrayList<MenuItem> menuItemCol, String fileName) {
 		int colSize = menuItemCol.size();
 		String[][] r1 = new String[colSize][6];
 		for (int i = 0; i < colSize; i++) {
@@ -51,6 +58,42 @@ public class TextFileMenuItemDAO implements IMenuItemDAO {
 		
 		boolean result = ParseTextFile.putStringTableToFile(fileName, r1);
 		
+		return result;
+	}
+
+	@Override
+	public ArrayList<MenuItem> getAllMenuItem() {
+		ArrayList<MenuItem> result = new ArrayList<>(collection);
+		
+		return result;
+	}
+
+	@Override
+	public boolean updateAll() {
+		return putMenuItemCol(collection, fileName);
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		updateAll();
+		super.finalize();
+	}
+
+	@Override
+	public int addMenuItem(MenuItem menuItem) {
+		collection.add(menuItem);
+		return collection.size()-1;
+	}
+
+	@Override
+	public boolean updateMenuItem(MenuItem menuItem) {
+		collection.set(menuItem.getID(), menuItem);
+		return true;
+	}
+
+	@Override
+	public MenuItem getMenuItemByID(int ID) {
+		MenuItem result = collection.get(ID);
 		return result;
 	}
 }

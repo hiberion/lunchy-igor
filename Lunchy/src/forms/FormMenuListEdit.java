@@ -9,7 +9,7 @@ import igor.lunchy.LunchyMain;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
+//import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 //import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.layout.*;
@@ -23,17 +23,12 @@ public class FormMenuListEdit {
 	private Shell 	shell;
 	private Table 	table;
 	private int 	lastSortColumn	= -1;   // For sort method
-	private Combo 	categoryCombo;   		// Category of Menu
-	private Color 	clGreen 		= Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);	
+	private Combo 	categoryCombo;   		// Category of Menu	
 	private Color 	clRed 			= Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
 	
-	//asdasdasdasdas
-	private Color clDarkGrey = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
+	//private Font 	fontBold 		= new Font(Display.getCurrent(), "Arial", 14, SWT.BOLD);
 	
-	private Font 	fontBold 		= new Font(Display.getCurrent(), "Arial", 14, SWT.BOLD);
-	
-	private static ResourceBundle resLunchy = (LunchyMain.lang == 1) ? ResourceBundle.getBundle("lunchy_ru") :
-		ResourceBundle.getBundle("lunchy_en");
+	private static ResourceBundle resLunchy = LunchyMain.resLunchy;
 	
 	String[] columnLabels = { 	resLunchy.getString("ID"),
 								resLunchy.getString("Menu_item_name"),
@@ -43,11 +38,10 @@ public class FormMenuListEdit {
 								resLunchy.getString("Menu_aval")
 								};
 	
-	//String[] columnNames = {"ID", "Name", "Category", "Description", "Price", "Availability"};
-	
 	ArrayList<MenuItem> currentMenuList = new ArrayList<>(LunchyMain.menuList);
 	
 	public FormMenuListEdit(Shell parent) {
+		/// Creating form
 		shell = new Shell(parent, SWT.SHELL_TRIM);
 		shell.setText(resLunchy.getString("Menu_editor"));
 		shell.setImage(new Image(shell.getDisplay(), "icon2.jpg"));
@@ -63,7 +57,8 @@ public class FormMenuListEdit {
 		if (currentCategory == 0)
 			currentCategory = 1;  // Specify Category
 		
-		MenuItem newMenuItem = new MenuItem(MenuItem.newId(),"Input name",currentCategory,"",0.0, false);
+		MenuItem newMenuItem =
+				new MenuItem(MenuItem.newId(),resLunchy.getString("Input_name"),currentCategory,"",0.0, false);
 		dialog.setEditableMenuItem(newMenuItem);
 		dialog.setTitle(resLunchy.getString("New_menu_item"));
 		dialog.open();
@@ -102,6 +97,7 @@ public class FormMenuListEdit {
 			TableItem item = new TableItem(table, SWT.NONE);
 			temp = currentMenuList.get(i).toStringArray();
 			temp[2] = LunchyMain.categoryList.get(currentMenuList.get(i).getCategory()).getName();
+			//temp[2] = "777";
 			temp[5] = currentMenuList.get(i).getAvail() ? "Доступен" : "Не доступен";
 			item.setText(temp);
 			//item.setForeground(clGreen);
@@ -136,7 +132,7 @@ public class FormMenuListEdit {
 		//TextStyle textstyle = new TextStyle(font1, clGreen, null);
 		//statusCaption.setForeground(clGreen);
 		
-		statusCaption.setText("Current menu status: ");
+		statusCaption.setText(resLunchy.getString("Current_menu_status"));
 		statusCaption.setLayoutData(gridData);
 		
 		Label statusText = new Label(shell, SWT.BORDER);
@@ -144,13 +140,13 @@ public class FormMenuListEdit {
 		gridData.horizontalSpan = 3;
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
-		statusText.setText("Current menu status");
+		statusText.setText(resLunchy.getString("Current_menu_status"));
 		statusText.setLayoutData(gridData);
 		
 		Label validCaption = new Label(shell, SWT.NONE);
 		gridData = new GridData();
 		gridData.minimumWidth = 40;
-		validCaption.setText("Menu valid date: ");
+		validCaption.setText(resLunchy.getString("Menu_valid_date"));
 		validCaption.setLayoutData(gridData);
 		
 		DateTime validDate = new DateTime(shell, SWT.NONE);
@@ -162,13 +158,13 @@ public class FormMenuListEdit {
 		gridData = new GridData();
 		gridData.horizontalIndent = 30;
 		gridData.horizontalSpan = 2;
-		checkBoxUpdate.setText("Menu updated: ");
+		checkBoxUpdate.setText(resLunchy.getString("Menu_updated"));
 		checkBoxUpdate.setLayoutData(gridData);
 		
 		Button btNewEntry = new Button(shell, SWT.PUSH);
 		gridData = new GridData();
 		//gridData.horizontalIndent = 30;
-		btNewEntry.setText("New menu entry");
+		btNewEntry.setText(resLunchy.getString("New_menu_entry"));
 		btNewEntry.setLayoutData(gridData);
 		btNewEntry.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -179,7 +175,7 @@ public class FormMenuListEdit {
 		Button btEditEntry = new Button(shell, SWT.PUSH);
 		gridData = new GridData();
 		//gridData.horizontalIndent = 30;
-		btEditEntry.setText("Edit menu entry");
+		btEditEntry.setText(resLunchy.getString("Edit_menu_entry"));
 		btEditEntry.setLayoutData(gridData);
 		btEditEntry.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -192,7 +188,7 @@ public class FormMenuListEdit {
 		Label categoryCaption = new Label(shell, SWT.NONE);
 		gridData = new GridData();
 		gridData.horizontalIndent = 30;
-		categoryCaption.setText("Menu category: ");
+		categoryCaption.setText(resLunchy.getString("Menu_category"));
 		categoryCaption.setLayoutData(gridData);
 		
 		// ?????? Final ? Why ?
@@ -272,8 +268,9 @@ public class FormMenuListEdit {
 			TableItem item = new TableItem(table, SWT.NONE);
 			temp = currentMenuList.get(i).toStringArray();
 			temp[2] = LunchyMain.categoryList.get(currentMenuList.get(i).getCategory()).getName();
+			//temp[2] = "888";
 			temp[5] = currentMenuList.get(i).getAvail() ? "Доступен" : "Не доступен";
-			item.setForeground(currentMenuList.get(i).getAvail() ? clGreen : clDarkGrey);
+			//item.setForeground(currentMenuList.get(i).getAvail() ? clGreen : clDarkGrey);
 			if (!currentMenuList.get(i).getAvail())
 				item.setBackground(clRed);
 			item.setText(temp);

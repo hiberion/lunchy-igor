@@ -6,6 +6,10 @@ public class Category {
 	
 	private static int curID = 1;
 	
+	public Category() {
+		
+	}
+	
 	public Category(int id, String name) {
 		ID = id;
 		this.name = name;

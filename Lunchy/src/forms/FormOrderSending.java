@@ -1,7 +1,8 @@
 package forms;
 
+import java.util.ArrayList;
+
 import igor.lunchy.LunchyMain;
-import igor.lunchy.ParseTextFile;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
@@ -12,11 +13,14 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
+import entities.MenuItemPersonalOrder;
+import entities.PersonalOrder;
+
 public class FormOrderSending {
 	
 	Shell shell;
 	private Table table;
-	String[] columnNames = {"#", "Name", "Category", "Price", "Quantity", "Common price"};
+	String[] columnNames = {"#", "Name", "Category", "Price", "Quantity", "Summ  price"};
 	
 	public FormOrderSending(Shell parent) {
 		shell = new Shell(parent, SWT.SHELL_TRIM);
@@ -33,13 +37,16 @@ public class FormOrderSending {
 		
 		//String[][] Data = ParseTextFile.getStringTable("menu.txt", "_", 6);
 		//MenuEnrty[] menu = MenuEnrty.getMenuEntries("menu.txt");
-		Color clGreen = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
+		//Color clGreen = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
+		
+		/*
 		for (int i = 0; i < LunchyMain.menuList.size(); i++) {
 			TableItem item = new TableItem(table, SWT.NONE);
 			item.setText(LunchyMain.menuList.get(i).toStringArray());
-			item.setForeground(clGreen);
+			//item.setForeground(clGreen);
 		}
-			
+		*/
+		getTableItems();
 		
 		shell.pack();
 		shell.open();
@@ -55,6 +62,97 @@ public class FormOrderSending {
 		//LunchyMain.setStatusLabel("Modified");
 	}
 	
+	private void getTableItems() {
+		
+		int curGeneralOrderID = LunchyMain.generalOrderList.get(0).getID();
+		
+		// 
+		ArrayList<Integer> miList = new ArrayList<>();
+		ArrayList<Integer> miListCount = new ArrayList<>();
+		for (PersonalOrder po: LunchyMain.personalOrderList) {
+			if (po.getGeneralOrderID() == curGeneralOrderID) {
+				for (MenuItemPersonalOrder mi_po : LunchyMain.mnItmPrsnlOrderList) {
+					if (mi_po.getPersonalOrderID() == po.getID()) {
+						miList.add(mi_po.getMenuItemID());
+						miListCount.add(mi_po.getItemCount());
+					}
+				}
+			}
+		}
+		
+		ArrayList<Integer> uniqMI = new ArrayList<>();
+		for (Integer i : miList) {
+			if (!uniqMI.contains(i)) {
+				uniqMI.add(i);
+			}
+		}
+		
+		Integer[] MICountArr = new Integer[miListCount.size()];
+		MICountArr = miListCount.toArray(MICountArr);
+		
+		Integer[] uniqMICountArr = new Integer[uniqMI.size()];
+		uniqMICountArr = miListCount.toArray(uniqMICountArr);
+		
+		for (int i = 0; i < miListCount.size(); i++) {
+			System.out.println(MICountArr[i]);
+		}
+		
+		int index = 0;
+		for (Integer i : uniqMI) {
+			for (Integer j : miList) {
+				if (j == i) {
+				}
+			}
+		}
+		
+		
+		/*
+		for (Integer i : miList) {
+			if (!uniqMI.contains(i)) {
+				uniqMI.add(i);
+			}
+		}
+		
+		String[] comboData = new String[uniqMI.size()];
+		int idx = 0;
+		int [] comboIndexes = new int[uniqMI.size()];
+		for (Integer i: uniqMI) {
+			comboData[idx] = LunchyMain.menuList.get(i).getName();
+			comboIndexes[idx] = i;
+			idx++;
+		}
+		
+		
+		// Check up selection
+		if (menuItemID == -1) {
+			return;
+		} else {
+			menuItemCombo.select(menuItemID);
+			//System.out.println(menuItemID);
+			tableOrder2.clearAll();
+			tableOrder2.setItemCount(0);
+			
+			for (PersonalOrder po: LunchyMain.personalOrderList) {
+				if (po.getGeneralOrderID() == curGeneralOrderID) {
+					for (MenuItemPersonalOrder mi_po : LunchyMain.mnItmPrsnlOrderList) {
+						if (mi_po.getPersonalOrderID() == po.getID()) {
+							if (mi_po.getMenuItemID() == comboIndexes[menuItemID]) {
+								String[] temp = new String[2];
+								TableItem item = new TableItem(tableOrder2, SWT.NONE);
+								temp[0] = LunchyMain.workerList.get(po.getWorkerID()).getName();
+								temp[1] = String.valueOf(mi_po.getItemCount());
+								item.setText(temp);
+							}
+						}
+					}
+				}
+			}
+		}
+		*/
+		
+	}
+
+
 	public void createWidgets() {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
@@ -140,6 +238,7 @@ public class FormOrderSending {
 				if (items.length > 0) {}//editEntry(items[0]);
 			}
 		});
+		
 		for(int i = 0; i < columnNames.length; i++) {
 			TableColumn column = new TableColumn(table, SWT.NONE);
 			column.setText(columnNames[i]);
@@ -152,6 +251,7 @@ public class FormOrderSending {
 				}
 			});
 		}
+		
 		TableColumn[] colummm = table.getColumns();
 		colummm[0].setWidth(30);
 		colummm[1].setWidth(120);
@@ -175,6 +275,19 @@ public class FormOrderSending {
 		gridData.grabExcessHorizontalSpace = true;
 		avgOrderSumText.setText("000");
 		avgOrderSumText.setLayoutData(gridData);
+		
+		Label totalOrderSumLabel = new Label(shell, SWT.NONE);
+		gridData = new GridData();
+		//gridData.horizontalIndent = 50;
+		totalOrderSumLabel.setText("Total order sum: ");
+		totalOrderSumLabel.setLayoutData(gridData);
+		
+		Label totalOrderSumText = new Label(shell, SWT.BORDER);
+		gridData = new GridData();
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		totalOrderSumText.setText("000");
+		totalOrderSumText.setLayoutData(gridData);
 		
 		Button sendButton = new Button(shell, SWT.PUSH);
 		sendButton.setText("Send order");
