@@ -5,17 +5,13 @@
 package igor.lunchy;
 
 import java.io.*;
-//import java.util.*;
 
 public class ParseTextFile {
-	
-	public ParseTextFile() {
-		super();
-	}
 	
 	// Service internal function
 	// Encoding string array to single string ( String[] -> String )
 	private static String encodeLine(String[] tableItems, String delimiter) {
+		
 		String line = "";
 		for (int i = 0; i < tableItems.length - 1; i++) {
 			line += tableItems[i] + delimiter;
@@ -28,6 +24,7 @@ public class ParseTextFile {
 	// Service internal function
 	// Decoding single string with delimiters to string array ( String -> String[] )
 	private static String[] decodeLine(String line, String delimiter, int rowCount) {
+		
 		if(line == null)
 			return null;
 		

@@ -6,6 +6,10 @@ public class Worker {
 	
 	private static int curID = 1;
 	
+	public Worker() {
+		
+	}
+	
 	public Worker(int id, String fullName) {
 		ID = id;
 		this.fullName = fullName;

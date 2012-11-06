@@ -6,10 +6,16 @@ import entities.Worker;
 
 public class TextFileWorkerDAO implements IWorkerDAO {
 	
-	String fileName = "Data/workers.txt";
-
-	@Override
-	public ArrayList<Worker> getWorkerCol() {
+	private ArrayList<Worker> collection;
+	private String fileName;
+	
+	
+	public TextFileWorkerDAO(String fileName) {
+		this.fileName = fileName;
+		collection = getWorkerCollection(fileName);
+	}
+	
+	private ArrayList<Worker> getWorkerCollection(String fileName) {
 		int tempID;
 		String tempName;
 		
@@ -26,21 +32,40 @@ public class TextFileWorkerDAO implements IWorkerDAO {
 				maxId = tempID;
 			}
 		}
+		
+		Worker.initId(maxId + 1);
+		
 		Worker.initId(result.size());
 		return result;
 	}
-
-	@Override
-	public boolean putWorkerCol(ArrayList<Worker> workerCol) {
-		int colSize = workerCol.size();
+	
+	private boolean putWorkerCollection(ArrayList<Worker> workerCollection) {
+		int colSize = workerCollection.size();
 		String[][] r1 = new String[colSize][2];
 		for (int i = 0; i < colSize; i++) {
-			r1[i] = workerCol.get(i).toStringArray();
+			r1[i] = workerCollection.get(i).toStringArray();
 		}
 		
 		boolean result = ParseTextFile.putStringTableToFile(fileName, r1);
 		
 		return result;
+	}
+
+	@Override
+	public Worker getWorkerByID(int ID) {
+		Worker result = collection.get(ID);
+		return result;
+	}
+
+	@Override
+	public ArrayList<Worker> getAllWorker() {
+		ArrayList<Worker> result = new ArrayList<>(collection);
+		return result;
+	}
+
+	@Override
+	public boolean updateAll() {
+		return putWorkerCollection(collection);
 	}
 
 }

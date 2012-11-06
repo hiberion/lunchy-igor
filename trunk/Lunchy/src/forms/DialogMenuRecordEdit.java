@@ -4,8 +4,9 @@ package forms;
 
 import igor.lunchy.LunchyMain;
 
-import java.awt.event.FocusAdapter;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
@@ -93,12 +94,13 @@ public class DialogMenuRecordEdit {
 		textName.setTextLimit(30);
 		textName.setText(currentMenuItem.getName());
 		textName.setData("index", new Integer(1));
+		textName.selectAll();
 		textName.addListener (SWT.Verify, new Listener () {
 			public void handleEvent (Event e) {
 				String string = e.text;
 				if (string.indexOf("_") != -1)
 				{
-					displayError(resLunchy.getString("Input_error1"));
+					//displayError(resLunchy.getString("Input_error1"));
 					e.doit = false;
 					return;
 				}
@@ -156,7 +158,7 @@ public class DialogMenuRecordEdit {
 				String string = e.text;
 				if (string.indexOf("_") != -1)
 				{
-					displayError(resLunchy.getString("Input_error1"));
+					//displayError(resLunchy.getString("Input_error1"));
 					e.doit = false;
 					return;
 				}
@@ -173,10 +175,17 @@ public class DialogMenuRecordEdit {
 		gridData.widthHint = 400;
 		textPrice.setLayoutData(gridData);
 		textPrice.setText(String.valueOf(currentMenuItem.getPrice()));
+		textPrice.setTextLimit(7);
 		textPrice.setData("index", new Integer(4));
+		//textPrice.setText("777");
 		textPrice.addListener (SWT.Verify, new Listener () {
+			int countDots = 0;
+			
 			public void handleEvent (Event e) {
-				String string = e.text;
+				countDots = 0;
+				
+				String string = e.text;				
+				//System.out.println("Handle " + str);
 				char [] chars = new char[string.length()];
 				string.getChars(0, chars.length, chars, 0);
 				for (int i=0; i<chars.length; i++) {
@@ -184,7 +193,34 @@ public class DialogMenuRecordEdit {
 						e.doit = false;
 						return;
 					}
+					if (chars[i] == '.')
+						countDots++;
 				}
+				
+				//if ((e.character == '\b') & (countDots == 1))
+					//countDots = 0;
+				
+				if (countDots > 1) {
+					System.out.println(">0");
+					e.doit = false;
+					return;
+				}
+				
+				Pattern pattern = Pattern.compile(".*[\\.]{1,}.*");
+				Matcher matcher = pattern.matcher(textPrice.getText());
+				boolean f = matcher.matches();
+				System.out.println(textPrice.getText() + " " + f);
+				//System.out.println(textPrice.getText().length());
+				
+				
+				if ((f) & (e.character != '\b')) {
+					if (e.character == '.') {
+						e.doit = false;
+						return;
+					}
+				}
+				
+				
 			}
 		});
 		//addTextListener(textPrice);
@@ -245,9 +281,10 @@ public class DialogMenuRecordEdit {
 				double d;
 				try {
 					d = Double.parseDouble(textPrice.getText());
+					//d = Double.parseDouble(str);
 				} catch (Exception e) {
-					displayError(resLunchy.getString("Nan_error"));
-					return;
+					d = 0;
+					//displayError(resLunchy.getString("Nan_error"));
 				}
 				currentMenuItem.setPrice(d);
 				

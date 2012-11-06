@@ -2,13 +2,17 @@ package dao;
 
 import java.util.ArrayList;
 
-import entities.Category;;
+import entities.Category;
 
 public interface ICategoryDAO {
-	ArrayList<Category> getCategoryCol();
-	boolean putCategoryCol(ArrayList<Category> categoryCol);
 	
-	Category createCategory();
-	void removeCategory(int categoryId);
-	void updateCategory(Category category);
+	//public int addCategory(Category category);
+	//public boolean updateCategoty(Category category);
+	public boolean updateAll();
+	public Category getCategoryByID(int ID);
+	public ArrayList<Category> getAllCategory();
+	
+	
+	//ArrayList<Category> getCategoryCol();
+	//boolean putCategoryCol(ArrayList<Category> categoryCol);
 }
