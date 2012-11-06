@@ -8,7 +8,7 @@ public class JDBC_DAOFactory extends DAOFactory {
 	
 	private String DBURL = "jdbc:postgresql://localhost:5432/LUNCHY_DB";
 	private String DBUser = "postgres";
-	private String DBPassword = "sipher";
+	private String DBPassword = "resolve";
 	private String errMessage = null;
 	
 	Connection connection;

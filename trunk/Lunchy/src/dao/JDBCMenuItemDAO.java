@@ -5,15 +5,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 import entities.MenuItem;
 
 public class JDBCMenuItemDAO implements IMenuItemDAO {
 	
 	Connection connection;
-	Statement statement;
-    ResultSet resultSet;
-    String errMessage = null;
+	
+    
+    private String errMessage = null;
     private ArrayList<MenuItem> collection;
 	
 	public JDBCMenuItemDAO(Connection connection) {
@@ -32,52 +33,31 @@ public class JDBCMenuItemDAO implements IMenuItemDAO {
 		
 		ArrayList<MenuItem> result = new ArrayList<>();
 		
-		try {
-			String queryTarget = "select * from menuitem";
-			String queryCountRecords = "select count(*) from menuitem";
-	        //String query = "insert into \"Menu\"(ID, \"Name\") values (6, 'RRR') ";
-	        statement = connection.createStatement();
-	        resultSet = statement.executeQuery(queryCountRecords);
-	        int rsSize = 0;
-	        while (resultSet.next())
-	        	rsSize = resultSet.getInt(1);
-	        resultSet.close();
-	        
-	        resultSet = statement.executeQuery(queryTarget);	        
-	        try {
-	        	      	
-	        	String[][] data = new String[rsSize][6];
-	        	int index = 0;
-	        	
-	        	while (resultSet.next()) {
-	        		data[index][0] = resultSet.getString(1);
-	        		data[index][1] = resultSet.getString(2);
-	        		data[index][2] = resultSet.getString(3);
-	        		data[index][3] = resultSet.getString(4);
-	        		data[index][4] = resultSet.getString(5);
-	        		data[index][5] = resultSet.getString(6);
-	        		//System.out.println(data[index][0] + " " + data[index][1] + " " + data[index][2] + " " +
-	        			//	data[index][3] + " " + data[index][4] + " " + data[index][5]);
-	        		index++;
-	        	}
-	        	resultSet.close();
-	        	
-	        	result = getMenuItemCollection(data);
-	           
-	        } catch (SQLException e) {
-	            errMessage = e.getMessage();
-	            System.out.println(errMessage);
-	        }			
-		} catch (SQLException e) {
-			errMessage = e.getMessage();
-	        System.out.println(errMessage);
-		}
-				
+		String queryTarget = "select * from menuitem";
+
+		final List<String[]> rsResult = new ArrayList<>();
+
+		JDBHelper.iterate(connection, queryTarget, new RSProcessor() {
+			@Override
+			public void process(ResultSet resultSet) throws SQLException {
+				String[] data = new String[6];
+				data[0] = resultSet.getString(1);
+				data[1] = resultSet.getString(2);
+				data[2] = resultSet.getString(3);
+				data[3] = resultSet.getString(4);
+				data[4] = resultSet.getString(5);
+				data[5] = resultSet.getString(6);
+
+				rsResult.add(data);
+			}
+		});
+
+		result = getMenuItemCollection(rsResult);
 		
 		return result;
 	}
 	
-	private ArrayList<MenuItem> getMenuItemCollection(String[][] Data) {
+	private ArrayList<MenuItem> getMenuItemCollection(List<String[]> Data) {
 		int tempID;
 		String tempName;
 		int tempCategory;
@@ -106,6 +86,9 @@ public class JDBCMenuItemDAO implements IMenuItemDAO {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see dao.IMenuItemDAO#addMenuItem(entities.MenuItem)
+	 */
 	@Override
 	public int addMenuItem(MenuItem menuItem) {
 		collection.add(menuItem);
@@ -123,7 +106,7 @@ public class JDBCMenuItemDAO implements IMenuItemDAO {
 		//System.out.println(query);
 		
 		try {
-	        statement = connection.createStatement();
+	        Statement statement = connection.createStatement();
 	        ret = statement.executeUpdate(query);
 	        			
 		} catch (SQLException e) {
@@ -151,7 +134,7 @@ public class JDBCMenuItemDAO implements IMenuItemDAO {
 		//System.out.println(query);
 		
 		try {
-	        statement = connection.createStatement();
+	        Statement statement = connection.createStatement();
 	        ret = statement.executeUpdate(query);
 	        			
 		} catch (SQLException e) {
