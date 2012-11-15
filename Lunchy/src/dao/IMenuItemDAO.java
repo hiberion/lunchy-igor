@@ -10,6 +10,9 @@ public interface IMenuItemDAO {
 	public boolean updateAll();
 	public MenuItem getMenuItemByID(int ID);
 	public ArrayList<MenuItem> getAllMenuItem();
+	public int getSize();
+	public ArrayList<MenuItem> getMenuItemByCategory(int category);
+	public ArrayList<MenuItem> getMenuItemByAvailability(boolean avail);
 	/////public Collection getAllMenuItem();
 	
 	//public ArrayList<MenuItem> getMenuItemCol();

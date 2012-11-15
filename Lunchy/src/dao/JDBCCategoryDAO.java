@@ -5,18 +5,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 import entities.Category;
+import entities.Worker;
 
 public class JDBCCategoryDAO implements ICategoryDAO {
 	
 	Connection connection;
-	Statement statement;
-    ResultSet resultSet;
-    String errMessage = null;
+	int size = 0;
+	//Statement statement;
+    //ResultSet resultSet;
+    private String errMessage = null;
+    private ArrayList<Category> collection;
     
     public JDBCCategoryDAO(Connection connection) {
 		this.connection = connection;
+		collection = getAllCategory();
 	}
 
 	@Override
@@ -27,8 +32,7 @@ public class JDBCCategoryDAO implements ICategoryDAO {
 
 	@Override
 	public Category getCategoryByID(int ID) {
-		// TODO Auto-generated method stub
-		return null;
+		return collection.get(ID);
 	}
 
 	@Override
@@ -36,46 +40,29 @@ public class JDBCCategoryDAO implements ICategoryDAO {
 		
 		ArrayList<Category> result = new ArrayList<>();
 		
-		try {
-			String queryTarget = "select * from category";
-			String queryCountRecords = "select count(*) from category";
-	        //String query = "insert into \"Menu\"(ID, \"Name\") values (6, 'RRR') ";
-	        statement = connection.createStatement();
-	        resultSet = statement.executeQuery(queryCountRecords);
-	        int rsSize = 0;
-	        while (resultSet.next())
-	        	rsSize = resultSet.getInt(1);
-	        resultSet.close();
-	        
-	        resultSet = statement.executeQuery(queryTarget);	        
-	        try {
-	        	      	
-	        	String[][] data = new String[rsSize][2];
-	        	int index = 0;
-	        	
-	        	while (resultSet.next()) {
-	        		data[index][0] = resultSet.getString(1);
-	        		data[index][1] = resultSet.getString(2);
-	        		//System.out.println(data[index][0] + " " + data[index][1]);
-	        		index++;
-	        	}
-	        	resultSet.close();
-	        	
-	        	result = getCategoryCollection(data);
-	           
-	        } catch (SQLException e) {
-	            errMessage = e.getMessage();
-	            System.out.println(errMessage);
-	        }			
-		} catch (SQLException e) {
-			errMessage = e.getMessage();
-	        System.out.println(errMessage);
-		}
-				
+		String queryTarget = "select * from category";
+
+		final List<String[]> rsResult = new ArrayList<>();
+		
+		JDBHelper.iterate(connection, queryTarget, new RSProcessor() {
+			@Override
+			public void process(ResultSet resultSet) throws SQLException {
+				String[] data = new String[2];
+				data[0] = resultSet.getString(1);
+				data[1] = resultSet.getString(2);
+
+				rsResult.add(data);
+			}
+		});
+
+		result = getCategoryCollection(rsResult);
+		
+		size = result.size();
+		
 		return result;
 	}
 	
-	private ArrayList<Category> getCategoryCollection(String[][] Data) {
+	private ArrayList<Category> getCategoryCollection(List<String[]> Data) {
 		int tempID;
 		String tempName;
 		

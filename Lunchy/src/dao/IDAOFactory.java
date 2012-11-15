@@ -8,6 +8,9 @@ public interface IDAOFactory {
 	public IMenuItemDAO getMenuItemDAO();
 	public ICategoryDAO getCategoryDAO();
 	public IWorkerDAO getWorkerDAO();
+	public IGeneralOrderDAO getGeneralOrderDAO();
+	public IPersonalOrderDAO getPersonalOrderDAO();
+	public IMenuItemPersonalOrderDAO getMenuItemPersonalOrderDAO();
 	
 	public IDAOFactory getDAOFactory(int typeFactory);
 }

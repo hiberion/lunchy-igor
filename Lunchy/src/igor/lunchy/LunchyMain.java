@@ -39,13 +39,23 @@ public class LunchyMain {
 	public static ResourceBundle resLunchy = ResourceBundle.getBundle("lunchy_en");
 	
 	// Work data
+	// Way #1
+	/*
 	public static ArrayList<MenuItem> menuList;
 	public static ArrayList<Category> categoryList;
 	public static ArrayList<Worker> workerList;
 	public static ArrayList<GeneralOrder> generalOrderList;
 	public static ArrayList<PersonalOrder> personalOrderList;
-	public static ArrayList<MenuItemPersonalOrder> mnItmPrsnlOrderList;
-		
+	public static ArrayList<MenuItemPersonalOrder> menuItemPersonalOrderList;
+	*/
+	
+	// Way #2
+	public static IMenuItemDAO menuItemDAO;
+	public static ICategoryDAO categoryDAO;
+	public static IWorkerDAO workerDAO;
+	public static IGeneralOrderDAO generalOrderDAO;
+	public static IPersonalOrderDAO personalOrderDAO;
+	public static IMenuItemPersonalOrderDAO menuItemPersonalOrderDAO;
 	
 	public static void main(String[] args) {
 		
@@ -60,7 +70,8 @@ public class LunchyMain {
 		//////////////////////////////////////////
 		
 		/// Getting data from datasource
-		DAOFactory daoFactory = new DAOFactory();
+		String dbPass = options.getProperty("DBPass");
+		DAOFactory daoFactory = new DAOFactory(dbPass);
 		
 		// Selection data source
 		String dataSource = options.getProperty("DataSource");
@@ -73,35 +84,50 @@ public class LunchyMain {
 		else
 			daoFactory = daoFactory.getDAOFactory(IDAOFactory.TEXTFILE);
 		
-		IMenuItemDAO menuItemDAO = daoFactory.getMenuItemDAO();
-		ICategoryDAO categoryDAO = daoFactory.getCategoryDAO();
-		IWorkerDAO workerDAO = daoFactory.getWorkerDAO();
+		
+		try {
+			menuItemDAO = daoFactory.getMenuItemDAO();
+			categoryDAO = daoFactory.getCategoryDAO();
+			workerDAO = daoFactory.getWorkerDAO();
+			
+			generalOrderDAO = daoFactory.getGeneralOrderDAO();
+			personalOrderDAO = daoFactory.getPersonalOrderDAO();
+			menuItemPersonalOrderDAO = daoFactory.getMenuItemPersonalOrderDAO();
+			
+		} catch (Exception e) {
+			System.out.println(e);
+			status = "Error creation datasource";
+			//return;
+		}
+		
 		
 		// (DEBUG)
 		//MenuItem mi = new MenuItem(7, "YYY", 3, "XXX", 12.3, true);
 		//menuItemDAO.addMenuItem(mi);
-		
+		/*
 		menuList = menuItemDAO.getAllMenuItem();
 		categoryList = categoryDAO.getAllCategory();
 		workerList = workerDAO.getAllWorker();
 		
+		generalOrderList = generalOrderDAO.getAllGeneralOrder();
+		personalOrderList = personalOrderDAO.getAllPersonalOrder();
+		menuItemPersonalOrderList = menuItemPersonalOrderDAO.getAllMenuItemPersonalOrder();
+		/*   Without part two
 		generalOrderList = new ArrayList<>();
 		Date date = new Date();
 		generalOrderList.add(new GeneralOrder(0, date));
 		personalOrderList = new ArrayList<>();
 		mnItmPrsnlOrderList = new ArrayList<>();
-		
-		for (GeneralOrder go : generalOrderList) {
-			System.out.println(go.toString());
-		}
+		*/
 		//////////////////////////////////////
-		
+		/*
 		/// (DEBUG) Checking successful data reading
 		System.out.println("DEBUG: " + menuList.size() + " " +
 				categoryList.size() + " " + workerList.size());
 		
 		if ((menuList.size() > 0) && (categoryList.size() > 0) && (workerList.size() > 0))
 			System.out.println("OK");
+		*/
 		/////////////////////////////
 		
 		/// Opening The Main Form of application 
@@ -121,7 +147,12 @@ public class LunchyMain {
 		/// Saving collection (needy for TEXTFILE DataSource)
 		menuItemDAO.updateAll();
 		
+		generalOrderDAO.updateAll();
+		personalOrderDAO.updateAll();
+		menuItemPersonalOrderDAO.updateAll();
+		
 		/// DEBUG
+		/*
 		System.out.println("Personal Order:");
 		for (PersonalOrder po : personalOrderList)
 			System.out.println(po.toString());
@@ -129,9 +160,9 @@ public class LunchyMain {
 		for (GeneralOrder go : generalOrderList)
 			System.out.println(go.toString());
 		System.out.println("MI_PO:");
-		for (MenuItemPersonalOrder mipo : mnItmPrsnlOrderList)
+		for (MenuItemPersonalOrder mipo : menuItemPersonalOrderList)
 			System.out.println(mipo.toString());
-		
+		*/
 	}
 	
 	public Shell open(Display display) {
@@ -192,11 +223,12 @@ public class LunchyMain {
 		// "Print order" button
 		Button btPrint = new Button(shell, SWT.PUSH);
 		btPrint.setText(resLunchy.getString("Print_order"));
-		btPrint.setEnabled(false);
+		//btPrint.setEnabled(false);
 		btPrint.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				//openEditMenu();
 				System.out.println("Printing the order");
+				PrintOrder.PrintPersonalOrders(shell);
 			}
 		});
 		

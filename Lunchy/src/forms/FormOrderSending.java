@@ -1,8 +1,12 @@
 package forms;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 import igor.lunchy.LunchyMain;
+import igor.lunchy.PrintOrder;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
@@ -13,6 +17,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
+import entities.GeneralOrder;
 import entities.MenuItemPersonalOrder;
 import entities.PersonalOrder;
 
@@ -20,32 +25,51 @@ public class FormOrderSending {
 	
 	Shell shell;
 	private Table table;
-	String[] columnNames = {"#", "Name", "Category", "Price", "Quantity", "Summ  price"};
+	
+	private int currentGeneralOrderID = 0;
+	
+	//String[] columnNames = {"#", "Name", "Category", "Price", "Quantity", "Summ  price"};
+	Label totalOrderSumText = null;
+	Label avgOrderSumText = null;
+	
+	Properties options = LunchyMain.options;
+	private static ResourceBundle resLunchy = LunchyMain.resLunchy;
+	
+	String[] columnLabels = { 	resLunchy.getString("ID"),
+								resLunchy.getString("Menu_item_name"),
+								resLunchy.getString("Menu_cat"),
+								resLunchy.getString("Price"),
+								resLunchy.getString("Quantity"),
+								resLunchy.getString("Sum_price")
+								};
+	
+	String[] columnNames = {columnLabels[0], columnLabels[1], columnLabels[2],
+			columnLabels[3], columnLabels[4], columnLabels[5]};
 	
 	public FormOrderSending(Shell parent) {
 		shell = new Shell(parent, SWT.SHELL_TRIM);
-		shell.setText("Sending order");
+		shell.setText(resLunchy.getString("Order_sending"));
 		shell.setImage(new Image(shell.getDisplay(), "icon2.jpg"));
 	}
 
 	
 	public void open() {
-		//createTextWidgets();
-		//createControlButtons();
-		//shell.pack();
 		createWidgets();
 		
-		//String[][] Data = ParseTextFile.getStringTable("menu.txt", "_", 6);
-		//MenuEnrty[] menu = MenuEnrty.getMenuEntries("menu.txt");
-		//Color clGreen = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
-		
-		/*
-		for (int i = 0; i < LunchyMain.menuList.size(); i++) {
-			TableItem item = new TableItem(table, SWT.NONE);
-			item.setText(LunchyMain.menuList.get(i).toStringArray());
-			//item.setForeground(clGreen);
+		Date date = new Date();
+		//LunchyMain.generalOrderDAO.addGeneralOrder(new GeneralOrder(0, new Date()));
+		GeneralOrder generalOrder = LunchyMain.generalOrderDAO.getGeneralOrderByDate(date);
+		if (generalOrder == null) {
+			System.out.println("No match");
+			int id = LunchyMain.generalOrderDAO.getAllGeneralOrder().size();
+			LunchyMain.generalOrderDAO.addGeneralOrder(new GeneralOrder(id, date));
+			currentGeneralOrderID = id;
 		}
-		*/
+		else {
+			System.out.println(generalOrder.getID() + " " + generalOrder.getOrderDate());
+			currentGeneralOrderID = generalOrder.getID();
+		}
+		
 		getTableItems();
 		
 		shell.pack();
@@ -64,14 +88,19 @@ public class FormOrderSending {
 	
 	private void getTableItems() {
 		
-		int curGeneralOrderID = LunchyMain.generalOrderList.get(0).getID();
+		double totalSum = 0;
+		double avgSum = 0;
+		int personalOrders = 0;
 		
-		// 
+		int curGeneralOrderID = currentGeneralOrderID;
+		
+		// Forming list of ordered menuItems for current general Order
 		ArrayList<Integer> miList = new ArrayList<>();
 		ArrayList<Integer> miListCount = new ArrayList<>();
-		for (PersonalOrder po: LunchyMain.personalOrderList) {
+		for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
 			if (po.getGeneralOrderID() == curGeneralOrderID) {
-				for (MenuItemPersonalOrder mi_po : LunchyMain.mnItmPrsnlOrderList) {
+				//personalOrders++;
+				for (MenuItemPersonalOrder mi_po : LunchyMain.menuItemPersonalOrderDAO.getAllMenuItemPersonalOrder()) {
 					if (mi_po.getPersonalOrderID() == po.getID()) {
 						miList.add(mi_po.getMenuItemID());
 						miListCount.add(mi_po.getItemCount());
@@ -80,6 +109,19 @@ public class FormOrderSending {
 			}
 		}
 		
+		// Finding no empty personal ordrs
+		for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
+			if (po.getGeneralOrderID() == curGeneralOrderID) {
+				MenuItemPersonalOrder result =
+						LunchyMain.menuItemPersonalOrderDAO.getMenuItemPersonalOrderByPersonalOrderID(po.getID());
+				if (result != null) {
+					personalOrders++;
+					continue;
+				}
+			}
+		}
+		
+		// Search unique ordered menuItems
 		ArrayList<Integer> uniqMI = new ArrayList<>();
 		for (Integer i : miList) {
 			if (!uniqMI.contains(i)) {
@@ -87,68 +129,46 @@ public class FormOrderSending {
 			}
 		}
 		
-		Integer[] MICountArr = new Integer[miListCount.size()];
-		MICountArr = miListCount.toArray(MICountArr);
-		
-		Integer[] uniqMICountArr = new Integer[uniqMI.size()];
-		uniqMICountArr = miListCount.toArray(uniqMICountArr);
-		
-		for (int i = 0; i < miListCount.size(); i++) {
-			System.out.println(MICountArr[i]);
-		}
-		
-		int index = 0;
-		for (Integer i : uniqMI) {
-			for (Integer j : miList) {
-				if (j == i) {
-				}
-			}
-		}
-		
-		
 		/*
-		for (Integer i : miList) {
-			if (!uniqMI.contains(i)) {
-				uniqMI.add(i);
-			}
-		}
-		
-		String[] comboData = new String[uniqMI.size()];
-		int idx = 0;
-		int [] comboIndexes = new int[uniqMI.size()];
-		for (Integer i: uniqMI) {
-			comboData[idx] = LunchyMain.menuList.get(i).getName();
-			comboIndexes[idx] = i;
-			idx++;
-		}
+		for (Integer i : uniqMI)
+			System.out.println("uniq: " + i);
+		*/
 		
 		
-		// Check up selection
-		if (menuItemID == -1) {
-			return;
-		} else {
-			menuItemCombo.select(menuItemID);
-			//System.out.println(menuItemID);
-			tableOrder2.clearAll();
-			tableOrder2.setItemCount(0);
-			
-			for (PersonalOrder po: LunchyMain.personalOrderList) {
+		// Filling common order table
+		for (Integer mi_id: uniqMI) {
+			int quant = 0;
+			String[] temp = new String[6];
+			TableItem item = new TableItem(table, SWT.NONE);
+			for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
 				if (po.getGeneralOrderID() == curGeneralOrderID) {
-					for (MenuItemPersonalOrder mi_po : LunchyMain.mnItmPrsnlOrderList) {
-						if (mi_po.getPersonalOrderID() == po.getID()) {
-							if (mi_po.getMenuItemID() == comboIndexes[menuItemID]) {
-								String[] temp = new String[2];
-								TableItem item = new TableItem(tableOrder2, SWT.NONE);
-								temp[0] = LunchyMain.workerList.get(po.getWorkerID()).getName();
-								temp[1] = String.valueOf(mi_po.getItemCount());
-								item.setText(temp);
-							}
-						}
+					for (MenuItemPersonalOrder mi_po : LunchyMain.menuItemPersonalOrderDAO.getAllMenuItemPersonalOrder()) {
+						if ((mi_po.getPersonalOrderID() == po.getID()) & (mi_po.getMenuItemID() == mi_id)) {
+							quant = quant + mi_po.getItemCount();
+						}						
 					}
 				}
 			}
+			temp[0] = String.valueOf(mi_id);
+			temp[1] = LunchyMain.menuItemDAO.getAllMenuItem().get(mi_id).getName();
+			temp[2] = LunchyMain.categoryDAO.getAllCategory().get(LunchyMain.menuItemDAO.getAllMenuItem().get(mi_id).getCategory()).getName();
+			temp[3] = String.valueOf(LunchyMain.menuItemDAO.getAllMenuItem().get(mi_id).getPrice());
+			temp[4] = String.valueOf(quant);
+			totalSum = totalSum + quant * (LunchyMain.menuItemDAO.getAllMenuItem().get(mi_id).getPrice());
+			temp[5] = String.valueOf(quant * (LunchyMain.menuItemDAO.getAllMenuItem().get(mi_id).getPrice()));
+			item.setText(temp);
+			
+			System.out.println(mi_id + ": " +quant);
+			quant = 0;
 		}
-		*/
+		
+		totalOrderSumText.setText(String.valueOf(totalSum));
+		if (personalOrders == 0)
+			personalOrders = 1;
+		avgSum = totalSum / personalOrders;
+		avgSum = (Math.round(avgSum * 100)) / 100;
+		avgOrderSumText.setText(String.valueOf(avgSum) + "\t\t" +
+			"(" + totalSum + " / " + personalOrders + " customers )");
 		
 	}
 
@@ -167,33 +187,33 @@ public class FormOrderSending {
 		//TextStyle textstyle = new TextStyle(font1, clGreen, null);
 		//statusCaption.setForeground(clGreen);
 		
-		companyNameLabel.setText("Organization Name: ");
+		companyNameLabel.setText(resLunchy.getString("Company_Name"));
 		companyNameLabel.setLayoutData(gridData);
 		
 		Label companyNameText = new Label(shell, SWT.BORDER);
 		gridData = new GridData();
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
-		companyNameText.setText("Name");
+		companyNameText.setText(options.getProperty("CompanyName"));
 		companyNameText.setLayoutData(gridData);
 		
 		Label companyPhoneLabel = new Label(shell, SWT.NONE);
 		gridData = new GridData();
 		gridData.minimumWidth = 40;
-		companyPhoneLabel.setText("Company Phone: ");
+		companyPhoneLabel.setText(resLunchy.getString("Company_Phone"));
 		companyPhoneLabel.setLayoutData(gridData);
 		
 		Label companyPhoneText = new Label(shell, SWT.BORDER);
 		gridData = new GridData();
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
-		companyPhoneText.setText("Company Phone: ");
+		companyPhoneText.setText(options.getProperty("CompanyPhone"));
 		companyPhoneText.setLayoutData(gridData);
 		
 		Label orderDateLabel = new Label(shell, SWT.NONE);
 		gridData = new GridData();
 		gridData.minimumWidth = 40;
-		orderDateLabel.setText("Order date: ");
+		orderDateLabel.setText(resLunchy.getString("Order_date"));
 		orderDateLabel.setLayoutData(gridData);
 		
 		Label orderDateText = new Label(shell, SWT.BORDER);
@@ -204,28 +224,15 @@ public class FormOrderSending {
 		orderDateText.setLayoutData(gridData);
 		
 		Label auxCaption = new Label(shell, SWT.NONE);
-		gridData = new GridData();
+		gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gridData.horizontalIndent = 50;
-		auxCaption.setText("Common order: ");
+		gridData.horizontalSpan = 2;
+		auxCaption.setText(resLunchy.getString("Com_order"));
 		auxCaption.setLayoutData(gridData);
 		
-		
-		
-		/*
-		Combo categoryCombo = new Combo(shell, SWT.NONE);
-		gridData = new GridData();
-		//categoryCaption.setText("Menu category: ");
-		//gridData.minimumWidth = 10;
-		categoryCombo.setLayoutData(gridData);
-		*/
-		
-		gridData = new GridData();
+		gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		//gridData.horizontalIndent = 30;
 		gridData.horizontalSpan = 4;
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.verticalAlignment = GridData.FILL;
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.grabExcessVerticalSpace = true;
 		table = new Table(shell, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLayoutData(gridData);
 		table.setLinesVisible(true);
@@ -247,7 +254,7 @@ public class FormOrderSending {
 			column.addSelectionListener(new SelectionAdapter() {		
 				public void widgetSelected(SelectionEvent e) {
 					//sort(columnIndex);
-					System.out.println("ddd");
+					//System.out.println("ddd");
 				}
 			});
 		}
@@ -255,9 +262,6 @@ public class FormOrderSending {
 		TableColumn[] colummm = table.getColumns();
 		colummm[0].setWidth(30);
 		colummm[1].setWidth(120);
-		//Button btt = new Button(shell, SWT.PUSH);
-		//btt.setText("8888");
-		//colummm[1].setData(new Button(shell, SWT.PUSH));
 		colummm[2].setWidth(100);
 		colummm[3].setWidth(90);
 		colummm[4].setWidth(90);
@@ -266,10 +270,10 @@ public class FormOrderSending {
 		Label avgOrderSumLabel = new Label(shell, SWT.NONE);
 		gridData = new GridData();
 		//gridData.horizontalIndent = 50;
-		avgOrderSumLabel.setText("Average order sum: ");
+		avgOrderSumLabel.setText(resLunchy.getString("Avg_order_sum"));
 		avgOrderSumLabel.setLayoutData(gridData);
 		
-		Label avgOrderSumText = new Label(shell, SWT.BORDER);
+		avgOrderSumText = new Label(shell, SWT.BORDER);
 		gridData = new GridData();
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
@@ -279,23 +283,48 @@ public class FormOrderSending {
 		Label totalOrderSumLabel = new Label(shell, SWT.NONE);
 		gridData = new GridData();
 		//gridData.horizontalIndent = 50;
-		totalOrderSumLabel.setText("Total order sum: ");
+		totalOrderSumLabel.setText(resLunchy.getString("Total_order_sum"));
 		totalOrderSumLabel.setLayoutData(gridData);
 		
-		Label totalOrderSumText = new Label(shell, SWT.BORDER);
+		totalOrderSumText = new Label(shell, SWT.BORDER);
 		gridData = new GridData();
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 		totalOrderSumText.setText("000");
 		totalOrderSumText.setLayoutData(gridData);
 		
+		Label warningLabel = new Label(shell, SWT.BORDER);
+		gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData.horizontalSpan = 2;
+		warningLabel.setText("");
+		warningLabel.setLayoutData(gridData);
+		
 		Button sendButton = new Button(shell, SWT.PUSH);
-		sendButton.setText("Send order");
+		sendButton.setText(resLunchy.getString("Send_order"));
 		gridData = new GridData();
 		gridData.horizontalSpan = 2;
 		gridData.widthHint = 170;
 		gridData.horizontalAlignment = GridData.CENTER;
 		sendButton.setLayoutData(gridData);
+		sendButton.addSelectionListener(new SelectionAdapter() {		
+			public void widgetSelected(SelectionEvent e) {
+				TableItem[] items = table.getItems();
+				ArrayList<String[]> printData = new ArrayList<>();
+				for (int i = 0; i < items.length; i++) {
+					String[] res = new String[6];
+					res[0] = items[i].getText(0);
+					res[1] = items[i].getText(1);
+					res[2] = items[i].getText(2);
+					res[3] = items[i].getText(3);
+					res[4] = items[i].getText(4);
+					res[5] = items[i].getText(5);
+					printData.add(res);
+				}
+				
+				PrintOrder.PrintGeneralOrder(shell, printData);
+			}
+		});
+		
 	}
 
 }

@@ -41,5 +41,13 @@ public class MenuItemPersonalOrder {
 	public String toString() {
 		return menuItemID + " " + personalOrderID + " " + itemCount;
 	}
+	
+	public String[] toStringArray() {
+		String[] result = new String[3];
+		result[0] = String.valueOf(menuItemID);
+		result[1] = String.valueOf(personalOrderID);;
+		result[2] = String.valueOf(itemCount);
+		return result;		
+	}
 
 }

@@ -24,6 +24,7 @@ public class LunchyOptions {
 		defauiltOptions.put("SingleOrderMaxSum", "200");
 		defauiltOptions.put("Warnings", "No");
 		defauiltOptions.put("Language", "English");
+		defauiltOptions.put("DBPass", "sipher");
 		
 		Properties result = new Properties(defauiltOptions);
 		FileInputStream fin = null;

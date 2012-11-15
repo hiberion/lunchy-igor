@@ -7,6 +7,11 @@ import entities.MenuItem;
 public class HibernateMenuItemDAO implements IMenuItemDAO {
 
 	@Override
+	public int getSize () {
+		return 0;
+	}
+	
+	@Override
 	public int addMenuItem(MenuItem menuItem) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -32,6 +37,18 @@ public class HibernateMenuItemDAO implements IMenuItemDAO {
 
 	@Override
 	public ArrayList<MenuItem> getAllMenuItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<MenuItem> getMenuItemByCategory(int category) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<MenuItem> getMenuItemByAvailability(boolean avail) {
 		// TODO Auto-generated method stub
 		return null;
 	}

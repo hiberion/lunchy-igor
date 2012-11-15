@@ -13,7 +13,7 @@ public class MenuItem {
 	private boolean avail = true;
 
 	private static int curID = 1;
-	
+		
 	
 	public double getPrice() {
 		return price;
@@ -66,6 +66,15 @@ public class MenuItem {
 		this.descript = desc;
 		this.price = price;
 		this.avail = avail;	
+	}
+	
+	public MenuItem(MenuItem menuItem) {
+		ID = menuItem.ID;
+		name = menuItem.name;
+		category = menuItem.category;
+		descript = menuItem.descript;
+		price = menuItem.price;
+		avail = menuItem.avail;
 	}
 	
 	static public ArrayList<MenuItem> byName(ArrayList<MenuItem> inAr, String name) {

@@ -12,7 +12,12 @@ import entities.MenuItem;
 public class JDBCMenuItemDAO implements IMenuItemDAO {
 	
 	Connection connection;
+	int size = 0;
 	
+	@Override
+	public int getSize () {
+		return size;
+	}	
     
     private String errMessage = null;
     private ArrayList<MenuItem> collection;
@@ -33,7 +38,7 @@ public class JDBCMenuItemDAO implements IMenuItemDAO {
 		
 		ArrayList<MenuItem> result = new ArrayList<>();
 		
-		String queryTarget = "select * from menuitem";
+		String queryTarget = "select * from menuitem order by id";
 
 		final List<String[]> rsResult = new ArrayList<>();
 
@@ -53,6 +58,8 @@ public class JDBCMenuItemDAO implements IMenuItemDAO {
 		});
 
 		result = getMenuItemCollection(rsResult);
+		
+		size = result.size();
 		
 		return result;
 	}
@@ -114,6 +121,7 @@ public class JDBCMenuItemDAO implements IMenuItemDAO {
 	        System.out.println(errMessage);
 		}
 		
+		size++;
 		return collection.size()-1;
 	}
 
@@ -151,6 +159,26 @@ public class JDBCMenuItemDAO implements IMenuItemDAO {
 	@Override
 	public MenuItem getMenuItemByID(int ID) {
 		MenuItem result = collection.get(ID);
+		return result;
+	}
+
+	@Override
+	public ArrayList<MenuItem> getMenuItemByCategory(int category) {
+		ArrayList<MenuItem> result = new ArrayList<>();
+		for (MenuItem mi: collection) {
+			if (mi.getCategory() == category)
+				result.add(mi);
+		}
+		return result;
+	}
+
+	@Override
+	public ArrayList<MenuItem> getMenuItemByAvailability(boolean avail) {
+		ArrayList<MenuItem> result = new ArrayList<>();
+		for (MenuItem mi: collection) {
+			if (mi.getAvail() == avail)
+				result.add(mi);
+		}
 		return result;
 	}
 

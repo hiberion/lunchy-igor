@@ -38,7 +38,8 @@ public class FormMenuListEdit {
 								resLunchy.getString("Menu_aval")
 								};
 	
-	ArrayList<MenuItem> currentMenuList = new ArrayList<>(LunchyMain.menuList);
+	//ArrayList<MenuItem> currentMenuList = new ArrayList<>(LunchyMain.menuList);
+	ArrayList<MenuItem> currentMenuList = LunchyMain.menuItemDAO.getAllMenuItem();
 	
 	public FormMenuListEdit(Shell parent) {
 		/// Creating form
@@ -49,7 +50,7 @@ public class FormMenuListEdit {
 	
 	private void newMenuEntry() {
 		DialogMenuRecordEdit dialog = new DialogMenuRecordEdit(shell);
-		int currentMenuListSize = LunchyMain.menuList.size();
+		int currentMenuListSize = LunchyMain.menuItemDAO.getSize();
 		
 		MenuItem.initId(currentMenuListSize);
 		int currentCategory = categoryCombo.getSelectionIndex();
@@ -58,13 +59,14 @@ public class FormMenuListEdit {
 			currentCategory = 1;  // Specify Category
 		
 		MenuItem newMenuItem =
-				new MenuItem(MenuItem.newId(),resLunchy.getString("Input_name"),currentCategory,"",0.0, false);
+				new MenuItem(currentMenuListSize,resLunchy.getString("Input_name"),currentCategory,"",0.0, false);
 		dialog.setEditableMenuItem(newMenuItem);
 		dialog.setTitle(resLunchy.getString("New_menu_item"));
 		dialog.open();
 		
 		if (dialog.getState() == DialogMenuRecordEdit.ITEM_CHANGED) {
-			LunchyMain.menuList.add(newMenuItem);
+			//LunchyMain.menuList.add(newMenuItem);
+			LunchyMain.menuItemDAO.addMenuItem(newMenuItem);
 			refreshTable(categoryCombo.getSelectionIndex());
 			//isModified = true;
 		}
@@ -72,11 +74,14 @@ public class FormMenuListEdit {
 	
 	private void editMenuEntry(TableItem item) {
 		DialogMenuRecordEdit dialog = new DialogMenuRecordEdit(shell);
-		dialog.setEditableMenuItem(LunchyMain.menuList.get(Integer.parseInt(item.getText(0))));
+		//dialog.setEditableMenuItem(LunchyMain.menuItemDAO.getAllMenuItem().get(Integer.parseInt(item.getText(0))));
+		MenuItem menuItem = new MenuItem(LunchyMain.menuItemDAO.getMenuItemByID(Integer.parseInt(item.getText(0))));
+		dialog.setEditableMenuItem(menuItem);
 		dialog.setTitle(resLunchy.getString("Edit_menu_item"));
 		dialog.open();
 		
 		if (dialog.getState() == DialogMenuRecordEdit.ITEM_CHANGED) {
+			LunchyMain.menuItemDAO.updateMenuItem(menuItem);
 			refreshTable(categoryCombo.getSelectionIndex());
 			//isModified = true;
 		}
@@ -96,17 +101,17 @@ public class FormMenuListEdit {
 			String[] temp = new String[6];
 			TableItem item = new TableItem(table, SWT.NONE);
 			temp = currentMenuList.get(i).toStringArray();
-			temp[2] = LunchyMain.categoryList.get(currentMenuList.get(i).getCategory()).getName();
+			temp[2] = LunchyMain.categoryDAO.getAllCategory().get(currentMenuList.get(i).getCategory()).getName();
 			//temp[2] = "777";
 			temp[5] = currentMenuList.get(i).getAvail() ? "Доступен" : "Не доступен";
 			item.setText(temp);
 			//item.setForeground(clGreen);
-		}
-			
+		}			
 		
 		shell.pack();
 		shell.open();
 		refreshTable(0);
+		//sort(0);
 		//shell.setSize(600, 600);
 		//shell.setSize(900, shell.getSize().y);
 		
@@ -193,8 +198,8 @@ public class FormMenuListEdit {
 		
 		// ?????? Final ? Why ?
 		categoryCombo = new Combo(shell, SWT.NONE | SWT.READ_ONLY);
-		String[] comboData = new String[LunchyMain.categoryList.size()];
-		for (Category cat: LunchyMain.categoryList) {
+		String[] comboData = new String[LunchyMain.categoryDAO.getAllCategory().size()];
+		for (Category cat: LunchyMain.categoryDAO.getAllCategory()) {
 			comboData[cat.getID()] = cat.getName();
 		}
 		
@@ -258,16 +263,18 @@ public class FormMenuListEdit {
 	
 	void refreshTable(int indexCombo) {
 		//table.clearAll();
+		int select = table.getSelectionIndex();
 		table.clearAll();
 		table.setItemCount(0);
-		currentMenuList = MenuItem.findByCat(LunchyMain.menuList, indexCombo);
+		currentMenuList = LunchyMain.menuItemDAO.getMenuItemByCategory(indexCombo);
 		if (indexCombo == 0)
-			currentMenuList = new ArrayList<>(LunchyMain.menuList);
+			currentMenuList = new ArrayList<>(LunchyMain.menuItemDAO.getAllMenuItem());
 		for (int i = 0; i < currentMenuList.size(); i++) {
 			String[] temp = new String[6];
 			TableItem item = new TableItem(table, SWT.NONE);
 			temp = currentMenuList.get(i).toStringArray();
-			temp[2] = LunchyMain.categoryList.get(currentMenuList.get(i).getCategory()).getName();
+			temp[2] = LunchyMain.categoryDAO.getAllCategory().get(currentMenuList.get(i).getCategory()).getName();
+			//temp[2] = LunchyMain.categoryList.get(currentMenuList.get(i).getCategory()).getName();
 			//temp[2] = "888";
 			temp[5] = currentMenuList.get(i).getAvail() ? "Доступен" : "Не доступен";
 			//item.setForeground(currentMenuList.get(i).getAvail() ? clGreen : clDarkGrey);
@@ -275,6 +282,7 @@ public class FormMenuListEdit {
 				item.setBackground(clRed);
 			item.setText(temp);
 		}
+		table.setSelection(select);
 		//System.out.println(indexCombo);
 	}
 	
