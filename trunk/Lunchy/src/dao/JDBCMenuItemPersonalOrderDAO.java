@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entities.MenuItemPersonalOrder;
-import entities.PersonalOrder;
 
 public class JDBCMenuItemPersonalOrderDAO implements
 		IMenuItemPersonalOrderDAO {
@@ -32,6 +31,7 @@ public class JDBCMenuItemPersonalOrderDAO implements
 		
 		collection.add(menuItemPersonalOrder);
 		
+		@SuppressWarnings("unused")
 		int ret = 0;
 		
 		String query =
@@ -71,6 +71,7 @@ public class JDBCMenuItemPersonalOrderDAO implements
 		if (updatingItem != -1) {
 			collection.set(updatingItem, menuItemPersonalOrder);
 			
+			@SuppressWarnings("unused")
 			int ret = 0;  // for result
 			
 			String query =
@@ -129,6 +130,7 @@ public class JDBCMenuItemPersonalOrderDAO implements
 		
 		if (deletingItem != -1) {
 			
+			@SuppressWarnings("unused")
 			int ret = 0;
 			
 			String query =

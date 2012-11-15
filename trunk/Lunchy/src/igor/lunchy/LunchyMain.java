@@ -15,12 +15,6 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-import entities.Category;
-import entities.GeneralOrder;
-import entities.MenuItem;
-import entities.MenuItemPersonalOrder;
-import entities.PersonalOrder;
-import entities.Worker;
 import forms.*;
 import dao.*;
 

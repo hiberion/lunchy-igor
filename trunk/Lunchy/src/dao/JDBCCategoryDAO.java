@@ -3,12 +3,10 @@ package dao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import entities.Category;
-import entities.Worker;
 
 public class JDBCCategoryDAO implements ICategoryDAO {
 	
@@ -16,7 +14,8 @@ public class JDBCCategoryDAO implements ICategoryDAO {
 	int size = 0;
 	//Statement statement;
     //ResultSet resultSet;
-    private String errMessage = null;
+    @SuppressWarnings("unused")
+	private String errMessage = null;
     private ArrayList<Category> collection;
     
     public JDBCCategoryDAO(Connection connection) {

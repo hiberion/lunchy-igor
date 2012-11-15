@@ -24,7 +24,7 @@ public class PrintOrder {
 		if (printer.startJob("General Order")) {
 			Color black = printer.getSystemColor(SWT.COLOR_BLACK);
 			Color white = printer.getSystemColor(SWT.COLOR_WHITE);
-			Color red = printer.getSystemColor(SWT.COLOR_RED);
+			//Color red = printer.getSystemColor(SWT.COLOR_RED);
 			Rectangle trim = printer.computeTrim(0, 0, 0, 0);
 			Point dpi = printer.getDPI();
 			int leftMargin = dpi.x + trim.x; // one inch from left side of paper
@@ -36,6 +36,7 @@ public class PrintOrder {
 				gc.setBackground(white);
 				gc.setForeground(black);
 				String testString = "General Order:";
+				@SuppressWarnings("unused")
 				Point extent = gc.stringExtent(testString);
 				gc.drawString(testString, leftMargin, topMargin);
 				
@@ -43,6 +44,7 @@ public class PrintOrder {
 				for (String[] str : data) {
 					String testString2 = str[0] + " " + str[1] + " " + str[2] + " " + str[3] + " " + str[4] +
 							" " + str[5];
+					@SuppressWarnings("unused")
 					Point extent2 = gc.stringExtent(testString2);
 					gc.drawString(testString2, leftMargin, topMargin + i);
 					i = i + 90;
@@ -72,7 +74,7 @@ public static boolean PrintPersonalOrders(Shell shell) {
 		if (printer.startJob("Personal Orders")) {
 			Color black = printer.getSystemColor(SWT.COLOR_BLACK);
 			Color white = printer.getSystemColor(SWT.COLOR_WHITE);
-			Color red = printer.getSystemColor(SWT.COLOR_RED);
+			//Color red = printer.getSystemColor(SWT.COLOR_RED);
 			Rectangle trim = printer.computeTrim(0, 0, 0, 0);
 			Point dpi = printer.getDPI();
 			int leftMargin = dpi.x + trim.x; // one inch from left side of paper
@@ -84,12 +86,14 @@ public static boolean PrintPersonalOrders(Shell shell) {
 				gc.setBackground(white);
 				gc.setForeground(black);
 				String testString = "Personal Orders";
+				@SuppressWarnings("unused")
 				Point extent = gc.stringExtent(testString);
 				gc.drawString(testString, leftMargin, topMargin);
 				int i = 130;
 				for (PersonalOrder po : LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
 					String testString2 = po.getID() + " " + LunchyMain.workerDAO.getWorkerByID(po.getWorkerID()).getName() +
 							" " + po.getGeneralOrderID();
+					@SuppressWarnings("unused")
 					Point extent2 = gc.stringExtent(testString2);
 					gc.drawString(testString2, leftMargin, topMargin + i);
 					i = i + 90;
