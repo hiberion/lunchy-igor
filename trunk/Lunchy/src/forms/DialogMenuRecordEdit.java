@@ -123,8 +123,8 @@ public class DialogMenuRecordEdit {
 		
 		final Combo categoryCombo = new Combo(shell, SWT.NONE | SWT.READ_ONLY);
 		// Вариант "Все категории" должен быть не доступен
-		String[] comboData = new String[LunchyMain.categoryList.size()-1];
-		for (Category cat: LunchyMain.categoryList) {
+		String[] comboData = new String[LunchyMain.categoryDAO.getAllCategory().size()-1];
+		for (Category cat: LunchyMain.categoryDAO.getAllCategory()) {
 			if (cat.getID() == 0)   // ID = 0 имеет "Все категории"
 				continue;
 			else

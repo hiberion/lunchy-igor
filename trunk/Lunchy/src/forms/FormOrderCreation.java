@@ -24,23 +24,24 @@ import entities.Worker;
 
 public class FormOrderCreation {
 	
-	Shell shell;
+	private Shell shell;
 	private Table tableMenu;
 	private Table tableOrder;
 	private Table tableOrder2; ///    temp, for testing
-	Spinner quantitySpinner;
-	Button addButton;
-	Button removeButton;
-	Text auxOrderText;
-	Combo menuItemCombo;
+	private Spinner quantitySpinner;
+	private Button addButton;
+	private Button removeButton;
+	private Text auxOrderText;
+	private Combo menuItemCombo;
 	
 	private int currentWorkerID = 0;
 	private int currentQuantity = 1;
 	private int currentMenuItem = -1;
+	private int currentGeneralOrderID = 0;
 	
 	private static ResourceBundle resLunchy = LunchyMain.resLunchy;
 	
-	String[] columnLabels = { 	resLunchy.getString("ID"),
+	private String[] columnLabels = { 	resLunchy.getString("ID"),
 								resLunchy.getString("Menu_item_name"),
 								resLunchy.getString("Menu_cat"),
 								resLunchy.getString("Menu_descr"),
@@ -48,11 +49,11 @@ public class FormOrderCreation {
 								resLunchy.getString("Menu_aval")
 								};
 	
-	String[] columnMenuNames = {columnLabels[0], columnLabels[1], columnLabels[2], columnLabels[3], columnLabels[4]};
-	String[] columnOrderNames = {columnLabels[0], columnLabels[1], columnLabels[2], columnLabels[4], resLunchy.getString("Quantity")};
-	String[] columnOrderByMenuItem = new String[] {"Ordered By", "Quantity"};
+	private String[] columnMenuNames = {columnLabels[0], columnLabels[1], columnLabels[2], columnLabels[3], columnLabels[4]};
+	private String[] columnOrderNames = {columnLabels[0], columnLabels[1], columnLabels[2], columnLabels[4], resLunchy.getString("Quantity")};
+	private String[] columnOrderByMenuItem = new String[] {"Ordered By", "Quantity"};
 	
-	ArrayList<MenuItem> currentMenuList = MenuItem.findByAvail(LunchyMain.menuList, true);
+	private ArrayList<MenuItem> currentMenuList = LunchyMain.menuItemDAO.getMenuItemByAvailability(true);
 	
 	public FormOrderCreation(Shell parent) {
 		shell = new Shell(parent, SWT.SHELL_TRIM);
@@ -61,7 +62,25 @@ public class FormOrderCreation {
 	}
 	
 	
-	public void open() {		
+	public void open() {
+		
+		//LunchyMain.generalOrderList.clear();
+		Date date = new Date();
+		//LunchyMain.generalOrderDAO.addGeneralOrder(new GeneralOrder(0, new Date()));
+		GeneralOrder generalOrder = LunchyMain.generalOrderDAO.getGeneralOrderByDate(date);
+		if (generalOrder == null) {
+			System.out.println("No match");
+			int id = LunchyMain.generalOrderDAO.getAllGeneralOrder().size();
+			LunchyMain.generalOrderDAO.addGeneralOrder(new GeneralOrder(id, date));
+			currentGeneralOrderID = id;
+		}
+		else {
+			System.out.println(generalOrder.getID() + " " + generalOrder.getOrderDate());
+			currentGeneralOrderID = generalOrder.getID();
+		}
+		
+		
+		//LunchyMain.generalOrderList.add(new );
 		createWidgets();
 		refreshPersonalOrderTable(currentWorkerID);
 		refreshTabOrdedByTable(currentWorkerID);
@@ -72,7 +91,7 @@ public class FormOrderCreation {
 			String[] res = new String[5];
 			TableItem item = new TableItem(tableMenu, SWT.NONE);
 			temp = currentMenuList.get(i).toStringArray();
-			temp[2] = LunchyMain.categoryList.get(currentMenuList.get(i).getCategory()).getName();
+			temp[2] = LunchyMain.categoryDAO.getAllCategory().get(currentMenuList.get(i).getCategory()).getName();
 			res[0] = temp[0];
 			res[1] = temp[1];
 			res[2] = temp[2];
@@ -143,8 +162,8 @@ public class FormOrderCreation {
 		gridData = new GridData();
 		gridData.horizontalSpan = 2;
 		categoryCombo.setLayoutData(gridData);
-		String[] comboData = new String[LunchyMain.categoryList.size()];
-		for (Category cat: LunchyMain.categoryList) {
+		String[] comboData = new String[LunchyMain.categoryDAO.getAllCategory().size()];
+		for (Category cat: LunchyMain.categoryDAO.getAllCategory()) {
 			comboData[cat.getID()] = cat.getName();
 		}
 		categoryCombo.setItems(comboData);
@@ -218,13 +237,13 @@ public class FormOrderCreation {
 			public void widgetSelected(SelectionEvent e) {
 				
 				TableItem[] items = tableMenu.getSelection();
-				if (items.length > 0) {}//editEntry(items[0]);
-				
-				makeOrder(Integer.parseInt(items[0].getText(0)), currentWorkerID, currentQuantity);
-				refreshPersonalOrderTable(currentWorkerID);
-				refreshTabOrdedByTable(currentMenuItem);
-				
-				quantitySpinner.setSelection(1);
+				if (items.length > 0) {
+					makeOrder(Integer.parseInt(items[0].getText(0)), currentWorkerID, currentQuantity);
+					refreshPersonalOrderTable(currentWorkerID);
+					refreshTabOrdedByTable(currentMenuItem);
+					
+					quantitySpinner.setSelection(1);
+				}
 			}
 		});
 		////////////////////////////////////////
@@ -287,8 +306,8 @@ public class FormOrderCreation {
 		gridData = new GridData();
 		//gridData.horizontalSpan = 2;
 		workerCombo.setLayoutData(gridData);
-		comboData = new String[LunchyMain.workerList.size()];
-		for (Worker wr: LunchyMain.workerList) {
+		comboData = new String[LunchyMain.workerDAO.getAllWorker().size()];
+		for (Worker wr: LunchyMain.workerDAO.getAllWorker()) {
 			comboData[wr.getID()] = wr.getName();
 		}
 		workerCombo.setItems(comboData);
@@ -312,10 +331,34 @@ public class FormOrderCreation {
 		//table.setMenu(createPopUpMenu());	
 		tableOrder.addSelectionListener(new SelectionAdapter() {
 			public void widgetDefaultSelected(SelectionEvent e) {
-				TableItem[] items = tableOrder2.getSelection();
+				TableItem[] items = tableOrder.getSelection();
 				if (items.length > 0) {}//editEntry(items[0]);
-				
 				System.out.println("Double Click");
+			}
+		});
+		tableOrder.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				if (arg0.keyCode == 127) {          /// Press "Delete"
+					TableItem[] items = tableOrder.getSelection();
+					int selected = tableOrder.getSelectionIndex();
+					if (items.length > 0) {
+						//System.out.println("Delete");
+						deleteOrderItem(Integer.parseInt(items[0].getText(0)), currentWorkerID);
+						refreshPersonalOrderTable(currentWorkerID);
+						refreshTabOrdedByTable(currentMenuItem);
+						selectTableItem(tableOrder, selected);
+					}
+					
+				}
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				//System.out.println("Key pressed");
+				//System.out.println("Delete");
 			}
 		});
 				
@@ -433,14 +476,32 @@ public class FormOrderCreation {
 		gridData.horizontalAlignment = GridData.FILL;
 		removeButton.setText(resLunchy.getString("Remove_from_Order"));
 		removeButton.setLayoutData(gridData);
-		
+		removeButton.addSelectionListener(new SelectionAdapter() {    
+			public void widgetSelected(SelectionEvent e) {
+				TableItem[] items = tableOrder.getSelection();
+				int selected = tableOrder.getSelectionIndex();
+				if (items.length > 0) {
+					//System.out.println("Delete");
+					deleteOrderItem(Integer.parseInt(items[0].getText(0)), currentWorkerID);
+					refreshPersonalOrderTable(currentWorkerID);
+					refreshTabOrdedByTable(currentMenuItem);
+					selectTableItem(tableOrder, selected);					
+				}
+			}
+		});
+				
 		// Aux widgets areas. Below menuGroup and orderGroup
 		Text auxText = new Text(shell, SWT.READ_ONLY | SWT.BORDER);
 		gridData = new GridData();
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.horizontalSpan = 2;
 		//auxText.setText("");
-		auxText.setText(LunchyMain.generalOrderList.get(0).getOrderDate());
+		
+		/// DEBUG:
+		if (LunchyMain.generalOrderDAO.getAllGeneralOrder().size() == 0)
+			auxText.setText("444");
+		else
+			auxText.setText(LunchyMain.generalOrderDAO.getAllGeneralOrder().get(0).getOrderDate());
 		auxText.setLayoutData(gridData);
 		
 		// Aux widgets areas. Below menuGroup and orderGroup
@@ -494,7 +555,7 @@ public class FormOrderCreation {
 			String[] res = new String[5];
 			TableItem item = new TableItem(tableMenu, SWT.NONE);
 			temp = tempMenuList.get(i).toStringArray();
-			temp[2] = LunchyMain.categoryList.get(tempMenuList.get(i).getCategory()).getName();
+			temp[2] = LunchyMain.categoryDAO.getAllCategory().get(tempMenuList.get(i).getCategory()).getName();
 			res[0] = temp[0];
 			res[1] = temp[1];
 			res[2] = temp[2];
@@ -509,13 +570,13 @@ public class FormOrderCreation {
 	// Aux tab for TabFolder
 	private void refreshTabOrdedByTable(int menuItemID) {
 		
-		int curGeneralOrderID = LunchyMain.generalOrderList.get(0).getID();
+		int curGeneralOrderID = currentGeneralOrderID;
 		
 		// 
 		ArrayList<Integer> miList = new ArrayList<>();
-		for (PersonalOrder po: LunchyMain.personalOrderList) {
+		for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
 			if (po.getGeneralOrderID() == curGeneralOrderID) {
-				for (MenuItemPersonalOrder mi_po : LunchyMain.mnItmPrsnlOrderList) {
+				for (MenuItemPersonalOrder mi_po : LunchyMain.menuItemPersonalOrderDAO.getAllMenuItemPersonalOrder()) {
 					if (mi_po.getPersonalOrderID() == po.getID())
 						miList.add(mi_po.getMenuItemID());
 				}
@@ -533,7 +594,7 @@ public class FormOrderCreation {
 		int idx = 0;
 		int [] comboIndexes = new int[uniqMI.size()];
 		for (Integer i: uniqMI) {
-			comboData[idx] = LunchyMain.menuList.get(i).getName();
+			comboData[idx] = LunchyMain.menuItemDAO.getAllMenuItem().get(i).getName();
 			comboIndexes[idx] = i;
 			idx++;
 		}
@@ -548,14 +609,14 @@ public class FormOrderCreation {
 			tableOrder2.clearAll();
 			tableOrder2.setItemCount(0);
 			
-			for (PersonalOrder po: LunchyMain.personalOrderList) {
+			for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
 				if (po.getGeneralOrderID() == curGeneralOrderID) {
-					for (MenuItemPersonalOrder mi_po : LunchyMain.mnItmPrsnlOrderList) {
+					for (MenuItemPersonalOrder mi_po : LunchyMain.menuItemPersonalOrderDAO.getAllMenuItemPersonalOrder()) {
 						if (mi_po.getPersonalOrderID() == po.getID()) {
 							if (mi_po.getMenuItemID() == comboIndexes[menuItemID]) {
 								String[] temp = new String[2];
 								TableItem item = new TableItem(tableOrder2, SWT.NONE);
-								temp[0] = LunchyMain.workerList.get(po.getWorkerID()).getName();
+								temp[0] = LunchyMain.workerDAO.getAllWorker().get(po.getWorkerID()).getName();
 								temp[1] = String.valueOf(mi_po.getItemCount());
 								item.setText(temp);
 							}
@@ -571,18 +632,18 @@ public class FormOrderCreation {
 	
 	// Personal Order Table
 	private void refreshPersonalOrderTable(int workerID) {
-		int curGeneralOrderID = LunchyMain.generalOrderList.get(0).getID();
+		int curGeneralOrderID = currentGeneralOrderID;
 		double amount = 0;
 		
 		boolean checkPersonalOrderByWorker = false;
-		int curPersonalOrderID = LunchyMain.personalOrderList.size();
+		int curPersonalOrderID = LunchyMain.personalOrderDAO.getAllPersonalOrder().size();
 		//boolean addmipoReq = true;
 		//MenuItemPersonalOrder mipo = null;
 		
 		auxOrderText.setText(resLunchy.getString("Order_amount") + " 0");
 		
 		// Checking existance PersonalOrder Entry
-		for (PersonalOrder po: LunchyMain.personalOrderList) {
+		for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
 			if (po.getGeneralOrderID() == curGeneralOrderID)
 				if (po.getWorkerID() == workerID) {
 					/// Entry exists 
@@ -602,19 +663,19 @@ public class FormOrderCreation {
 			tableOrder.clearAll();
 			tableOrder.setItemCount(0);
 			
-			for (MenuItemPersonalOrder mi_po : LunchyMain.mnItmPrsnlOrderList) {
+			for (MenuItemPersonalOrder mi_po : LunchyMain.menuItemPersonalOrderDAO.getAllMenuItemPersonalOrder()) {
 				if (mi_po.getPersonalOrderID() == curPersonalOrderID) {
 					
 					String[] temp = new String[5];
 					TableItem item = new TableItem(tableOrder, SWT.NONE);
 					temp[0] = String.valueOf(mi_po.getMenuItemID());
-					temp[1] = LunchyMain.menuList.get(mi_po.getMenuItemID()).getName();
-					temp[2] = LunchyMain.categoryList.get(LunchyMain.menuList.get(mi_po.getMenuItemID()).getCategory()).getName();
-					temp[3] = String.valueOf((LunchyMain.menuList.get(mi_po.getMenuItemID()).getPrice()) * (mi_po.getItemCount()));
+					temp[1] = LunchyMain.menuItemDAO.getAllMenuItem().get(mi_po.getMenuItemID()).getName();
+					temp[2] = LunchyMain.categoryDAO.getAllCategory().get(LunchyMain.menuItemDAO.getAllMenuItem().get(mi_po.getMenuItemID()).getCategory()).getName();
+					temp[3] = String.valueOf((LunchyMain.menuItemDAO.getAllMenuItem().get(mi_po.getMenuItemID()).getPrice()) * (mi_po.getItemCount()));
 					temp[4] = String.valueOf(mi_po.getItemCount());
 					item.setText(temp);
 					amount += Double.parseDouble(temp[3]);
-					System.out.println(amount);
+					//System.out.println(amount);
 				}
 			}
 		}
@@ -625,17 +686,17 @@ public class FormOrderCreation {
 	
 	// Make order
 	private void makeOrder(int menuItemID, int workerID, int count) {
-		System.out.println(menuItemID + " " + workerID + " " + count);
+		//System.out.println(menuItemID + " " + workerID + " " + count);
 		
-		int curGeneralOrderID = LunchyMain.generalOrderList.get(0).getID();
+		int curGeneralOrderID = currentGeneralOrderID;
 		
 		boolean checkPersonalOrderByWorker = false;
-		int curPersonalOrderID = LunchyMain.personalOrderList.size();
+		int curPersonalOrderID = LunchyMain.personalOrderDAO.getAllPersonalOrder().size();
 		boolean addmipoReq = true;
 		MenuItemPersonalOrder mipo = null;
 		
 		// Checking existance PersonalOrder Entry
-		for (PersonalOrder po: LunchyMain.personalOrderList) {
+		for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
 			if (po.getGeneralOrderID() == curGeneralOrderID)
 				if (po.getWorkerID() == workerID) {
 					/// Entry exists 
@@ -648,10 +709,11 @@ public class FormOrderCreation {
 		/// Main branch 
 		if (checkPersonalOrderByWorker) {
 			/// Personal Order entry exists
-			for (MenuItemPersonalOrder mi_po : LunchyMain.mnItmPrsnlOrderList) {
+			for (MenuItemPersonalOrder mi_po : LunchyMain.menuItemPersonalOrderDAO.getAllMenuItemPersonalOrder()) {
 				if (mi_po.getMenuItemID() == menuItemID)
 					if (mi_po.getPersonalOrderID() == curPersonalOrderID) {
 						mi_po.setItemCount(mi_po.getItemCount() + count); // Adding count to existing entry
+						LunchyMain.menuItemPersonalOrderDAO.updateMenuItemPersonalOrder(mi_po);
 						addmipoReq = false;
 						break;
 					}
@@ -659,13 +721,13 @@ public class FormOrderCreation {
 			}
 			if (addmipoReq) {
 				mipo = new MenuItemPersonalOrder(menuItemID, curPersonalOrderID, count);
-				LunchyMain.mnItmPrsnlOrderList.add(mipo);
+				LunchyMain.menuItemPersonalOrderDAO.addMenuItemPersonalOrder(mipo);
 			}
 			
 			/// Personal Order entry not exists
 		} else {
-			LunchyMain.personalOrderList.add(new PersonalOrder(curPersonalOrderID, workerID, curGeneralOrderID));
-			LunchyMain.mnItmPrsnlOrderList.add(new MenuItemPersonalOrder(menuItemID, curPersonalOrderID, count));
+			LunchyMain.personalOrderDAO.addPersonalOrder(new PersonalOrder(curPersonalOrderID, workerID, curGeneralOrderID));
+			LunchyMain.menuItemPersonalOrderDAO.addMenuItemPersonalOrder(new MenuItemPersonalOrder(menuItemID, curPersonalOrderID, count));
 		}
 		
 	}
@@ -676,5 +738,52 @@ public class FormOrderCreation {
 	//
 	//}
 
+	private void deleteOrderItem(int menuItemID, int workerID) {
+		int curGeneralOrderID = currentGeneralOrderID;
+		boolean res = false;
+		
+		for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
+			if (po.getGeneralOrderID() == curGeneralOrderID)
+				if (po.getWorkerID() == workerID) {
+					res = LunchyMain.menuItemPersonalOrderDAO.removeMenuItemPersonalOrder(menuItemID, po.getID());
+				}
+		}
+		
+		/*
+		int deletingPersonalOrder = -1;
+		
+		for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
+			if (po.getGeneralOrderID() == curGeneralOrderID)
+				if (po.getWorkerID() == workerID) {
+					MenuItemPersonalOrder result =
+							LunchyMain.menuItemPersonalOrderDAO.getMenuItemPersonalOrderByPersonalOrderID(po.getID());
+					if (result == null) {
+						deletingPersonalOrder = po.getID();
+						break;
+					}
+				}
+		}
+		
+		if (deletingPersonalOrder != -1) {
+			LunchyMain.personalOrderDAO.removePersonalOrder(deletingPersonalOrder);
+			System.out.println("Delete personal order");
+		}
+		*/
+		//		
+		System.out.println("Deleted " + menuItemID + " " + workerID + " " + res);
+		
+	}
+	
+	private void selectTableItem(Table table, int selected) {
+		if (selected == 0) {
+			if (table.getItemCount() != 0)
+				table.select(0);
+		} else {
+			if (selected == table.getItemCount())
+				table.select(selected - 1);
+			else
+				table.select(selected);
+		}
+	}
 }
 

@@ -12,6 +12,12 @@ public class TextFileMenuItemDAO implements IMenuItemDAO {
 	
 	private ArrayList<MenuItem> collection;
 	private String fileName;
+	//private int size;
+	
+	@Override
+	public int getSize () {
+		return collection.size();
+	}
 	
 	
 	public TextFileMenuItemDAO(String fileName) {
@@ -49,7 +55,7 @@ public class TextFileMenuItemDAO implements IMenuItemDAO {
 		return result;
 	}
 	
-	private boolean putMenuItemCol(ArrayList<MenuItem> menuItemCol, String fileName) {
+	private boolean putMenuItemCollection(ArrayList<MenuItem> menuItemCol) {
 		int colSize = menuItemCol.size();
 		String[][] r1 = new String[colSize][6];
 		for (int i = 0; i < colSize; i++) {
@@ -64,13 +70,12 @@ public class TextFileMenuItemDAO implements IMenuItemDAO {
 	@Override
 	public ArrayList<MenuItem> getAllMenuItem() {
 		ArrayList<MenuItem> result = new ArrayList<>(collection);
-		
 		return result;
 	}
 
 	@Override
 	public boolean updateAll() {
-		return putMenuItemCol(collection, fileName);
+		return putMenuItemCollection(collection);
 	}
 	
 	@Override
@@ -94,6 +99,28 @@ public class TextFileMenuItemDAO implements IMenuItemDAO {
 	@Override
 	public MenuItem getMenuItemByID(int ID) {
 		MenuItem result = collection.get(ID);
+		return result;
+	}
+
+
+	@Override
+	public ArrayList<MenuItem> getMenuItemByCategory(int category) {
+		ArrayList<MenuItem> result = new ArrayList<>();
+		for (MenuItem mi: collection) {
+			if (mi.getCategory() == category)
+				result.add(mi);
+		}
+		return result;
+	}
+
+
+	@Override
+	public ArrayList<MenuItem> getMenuItemByAvailability(boolean avail) {
+		ArrayList<MenuItem> result = new ArrayList<>();
+		for (MenuItem mi: collection) {
+			if (mi.getAvail() == avail)
+				result.add(mi);
+		}
 		return result;
 	}
 }

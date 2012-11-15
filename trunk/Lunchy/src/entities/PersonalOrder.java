@@ -56,5 +56,13 @@ public class PersonalOrder {
 	
 	public String toString() {
 		return ID+" "+workerID+" "+generalOrderID;
-	}	
+	}
+	
+	public String[] toStringArray() {
+		String[] result = new String[3];
+		result[0] = String.valueOf(ID);
+		result[1] = String.valueOf(workerID);
+		result[2] = String.valueOf(generalOrderID);
+		return result;		
+	}
 }
