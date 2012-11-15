@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -113,8 +114,12 @@ public class JDBCMenuItemDAO implements IMenuItemDAO {
 		//System.out.println(query);
 		
 		try {
-	        Statement statement = connection.createStatement();
-	        ret = statement.executeUpdate(query);
+	        PreparedStatement statement = connection.prepareStatement(query);
+	        statement.setInt(1, menuItem.getID());
+	        statement.setString(2, menuItem.getName());
+	        // ....
+	        
+	        ret = statement.executeUpdate();
 	        			
 		} catch (SQLException e) {
 			errMessage = e.getMessage();
