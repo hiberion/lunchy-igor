@@ -1,0 +1,337 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.2.1
+-- Dumped by pg_dump version 9.2.1
+-- Started on 2012-11-15 15:43:41
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- TOC entry 174 (class 3079 OID 11727)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 1970 (class 0 OID 0)
+-- Dependencies: 174
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 169 (class 1259 OID 16416)
+-- Name: category; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE category (
+    id integer NOT NULL,
+    name text NOT NULL
+);
+
+
+ALTER TABLE public.category OWNER TO postgres;
+
+--
+-- TOC entry 171 (class 1259 OID 16447)
+-- Name: general_order; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE general_order (
+    id integer NOT NULL,
+    date text NOT NULL
+);
+
+
+ALTER TABLE public.general_order OWNER TO postgres;
+
+--
+-- TOC entry 168 (class 1259 OID 16406)
+-- Name: menuitem; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE menuitem (
+    id integer NOT NULL,
+    name text NOT NULL,
+    category_id integer NOT NULL,
+    description text,
+    price double precision DEFAULT 0.0 NOT NULL,
+    availability boolean DEFAULT true NOT NULL
+);
+
+
+ALTER TABLE public.menuitem OWNER TO postgres;
+
+--
+-- TOC entry 173 (class 1259 OID 16495)
+-- Name: menuitem_personalorder; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE menuitem_personalorder (
+    menuitem_id integer NOT NULL,
+    personalorder_id integer NOT NULL,
+    count integer NOT NULL
+);
+
+
+ALTER TABLE public.menuitem_personalorder OWNER TO postgres;
+
+--
+-- TOC entry 172 (class 1259 OID 16455)
+-- Name: personal_order; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE personal_order (
+    id integer NOT NULL,
+    worker_id integer NOT NULL,
+    gen_order_id integer NOT NULL
+);
+
+
+ALTER TABLE public.personal_order OWNER TO postgres;
+
+--
+-- TOC entry 170 (class 1259 OID 16439)
+-- Name: worker; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE worker (
+    id integer NOT NULL,
+    name text
+);
+
+
+ALTER TABLE public.worker OWNER TO postgres;
+
+--
+-- TOC entry 1958 (class 0 OID 16416)
+-- Dependencies: 169
+-- Data for Name: category; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY category (id, name) FROM stdin;
+0	Все категории
+1	Первые блюда
+2	Салаты
+3	Напитки
+4	Вторые блюда
+5	Гарниры
+6	Десерты
+7	Другие
+\.
+
+
+--
+-- TOC entry 1960 (class 0 OID 16447)
+-- Dependencies: 171
+-- Data for Name: general_order; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY general_order (id, date) FROM stdin;
+0	2012-11-15
+\.
+
+
+--
+-- TOC entry 1957 (class 0 OID 16406)
+-- Dependencies: 168
+-- Data for Name: menuitem; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY menuitem (id, name, category_id, description, price, availability) FROM stdin;
+1	Салат "Цезарь"	2	Состав: куриное мясо, картофель	65	t
+2	Компот малиновый	3	Стакан 200 мл	15.4	f
+3	Каша гречневая	5	Вес 400 грамм	40.5	t
+4	Сок яблочный	3	200 мл	16	f
+5	Молочный суп	1	порция 1300	34.899999999999999	t
+6	Каша рисовая	5	Вес 400 грамм	40.5	t
+7	Пюре картофельное	5	Вес 400 грамм	40.5	t
+8	Салат овощной	2	Огурцы, помидоры, лук, сметана	40.5	f
+9	Яйцо под майонезом	2	Вес 400 грамм	40.5	t
+10	 Плов рисовый	4	Вес 400 грамм	50	t
+0	Суп гороховый со сметаной	1	Суп гороховый	20	t
+11	Мороженое сливочное Крем-брюле	6	Порция 100 граммов	33	f
+\.
+
+
+--
+-- TOC entry 1962 (class 0 OID 16495)
+-- Dependencies: 173
+-- Data for Name: menuitem_personalorder; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY menuitem_personalorder (menuitem_id, personalorder_id, count) FROM stdin;
+6	0	2
+7	0	1
+9	2	1
+6	2	1
+5	2	1
+7	3	1
+\.
+
+
+--
+-- TOC entry 1961 (class 0 OID 16455)
+-- Dependencies: 172
+-- Data for Name: personal_order; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY personal_order (id, worker_id, gen_order_id) FROM stdin;
+0	0	0
+1	1	0
+2	4	0
+3	5	0
+\.
+
+
+--
+-- TOC entry 1959 (class 0 OID 16439)
+-- Dependencies: 170
+-- Data for Name: worker; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY worker (id, name) FROM stdin;
+0	Иванов Иван
+1	Петров Петр
+2	Сидоров Масим
+3	Валуев Андрей
+4	Микрохин Сергей
+5	Микки Маус
+6	Морган Декстер
+7	Батиста Анхель
+\.
+
+
+--
+-- TOC entry 1943 (class 2606 OID 16423)
+-- Name: category_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY category
+    ADD CONSTRAINT category_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1947 (class 2606 OID 16454)
+-- Name: general_order_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY general_order
+    ADD CONSTRAINT general_order_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1951 (class 2606 OID 16499)
+-- Name: menuitem_personalorder_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY menuitem_personalorder
+    ADD CONSTRAINT menuitem_personalorder_pkey PRIMARY KEY (menuitem_id, personalorder_id);
+
+
+--
+-- TOC entry 1941 (class 2606 OID 16415)
+-- Name: menuitem_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY menuitem
+    ADD CONSTRAINT menuitem_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1949 (class 2606 OID 16459)
+-- Name: personal_order_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY personal_order
+    ADD CONSTRAINT personal_order_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1945 (class 2606 OID 16446)
+-- Name: worker_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY worker
+    ADD CONSTRAINT worker_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 1952 (class 2606 OID 16434)
+-- Name: menuitem_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY menuitem
+    ADD CONSTRAINT menuitem_category_id_fkey FOREIGN KEY (category_id) REFERENCES category(id);
+
+
+--
+-- TOC entry 1955 (class 2606 OID 16500)
+-- Name: menuitem_personalorder_menuitem_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY menuitem_personalorder
+    ADD CONSTRAINT menuitem_personalorder_menuitem_id_fkey FOREIGN KEY (menuitem_id) REFERENCES menuitem(id);
+
+
+--
+-- TOC entry 1956 (class 2606 OID 16505)
+-- Name: menuitem_personalorder_personalorder_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY menuitem_personalorder
+    ADD CONSTRAINT menuitem_personalorder_personalorder_id_fkey FOREIGN KEY (personalorder_id) REFERENCES personal_order(id);
+
+
+--
+-- TOC entry 1954 (class 2606 OID 16465)
+-- Name: personal_order_gen_order_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY personal_order
+    ADD CONSTRAINT personal_order_gen_order_id_fkey FOREIGN KEY (gen_order_id) REFERENCES general_order(id);
+
+
+--
+-- TOC entry 1953 (class 2606 OID 16460)
+-- Name: personal_order_worker_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY personal_order
+    ADD CONSTRAINT personal_order_worker_id_fkey FOREIGN KEY (worker_id) REFERENCES worker(id);
+
+
+--
+-- TOC entry 1969 (class 0 OID 0)
+-- Dependencies: 6
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2012-11-15 15:43:42
+
+--
+-- PostgreSQL database dump complete
+--
+

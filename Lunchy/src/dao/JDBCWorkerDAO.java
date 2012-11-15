@@ -3,11 +3,9 @@ package dao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import entities.MenuItem;
 import entities.Worker;
 
 public class JDBCWorkerDAO implements IWorkerDAO {
@@ -17,6 +15,7 @@ public class JDBCWorkerDAO implements IWorkerDAO {
 	//Statement statement;
     //ResultSet resultSet;
     
+	@SuppressWarnings("unused")
 	private String errMessage = null;
 	private ArrayList<Worker> collection;
 	

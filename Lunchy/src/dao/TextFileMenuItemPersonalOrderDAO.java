@@ -5,7 +5,6 @@ import igor.lunchy.ParseTextFile;
 import java.util.ArrayList;
 
 import entities.MenuItemPersonalOrder;
-import entities.PersonalOrder;
 
 public class TextFileMenuItemPersonalOrderDAO implements IMenuItemPersonalOrderDAO {
 

@@ -7,9 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import entities.GeneralOrder;
 import entities.PersonalOrder;
-import entities.Worker;
 
 public class JDBCPersonalOrderDAO implements IPersonalOrderDAO {
 	
@@ -30,6 +28,7 @@ public class JDBCPersonalOrderDAO implements IPersonalOrderDAO {
 	public int addPersonalOrder(PersonalOrder personalOrder) {
 		collection.add(personalOrder);
 		
+		@SuppressWarnings("unused")
 		int ret = 0;
 		
 		String query =
@@ -161,6 +160,7 @@ public class JDBCPersonalOrderDAO implements IPersonalOrderDAO {
 		
 		if (deletingItem != -1) {
 			
+			@SuppressWarnings("unused")
 			int ret = 0;
 			
 			String query =
