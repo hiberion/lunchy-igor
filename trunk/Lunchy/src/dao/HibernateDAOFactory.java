@@ -30,4 +30,5 @@ public class HibernateDAOFactory extends DAOFactory {
 	public IMenuItemPersonalOrderDAO getMenuItemPersonalOrderDAO() {
 		return new HibernateMenuItemPersonalOrderDAO();
 	}
+	
 }

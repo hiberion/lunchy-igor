@@ -80,7 +80,7 @@ public class DialogMenuRecordEdit {
 		gridData.widthHint = 400;
 		textID.setLayoutData(gridData);
 		textID.setEnabled(false);
-		textID.setText(String.valueOf(currentMenuItem.getID()));
+		textID.setText(String.valueOf(currentMenuItem.getId()));
 		textID.setData("index", new Integer(0));
 		/////////////////////////////
 		
@@ -125,10 +125,10 @@ public class DialogMenuRecordEdit {
 		// Вариант "Все категории" должен быть не доступен
 		String[] comboData = new String[LunchyMain.categoryDAO.getAllCategory().size()-1];
 		for (Category cat: LunchyMain.categoryDAO.getAllCategory()) {
-			if (cat.getID() == 0)   // ID = 0 имеет "Все категории"
+			if (cat.getId() == 0)   // ID = 0 имеет "Все категории"
 				continue;
 			else
-				comboData[cat.getID()-1] = cat.getName();
+				comboData[cat.getId()-1] = cat.getName();
 		}
 		categoryCombo.setItems(comboData);
 		categoryCombo.select(currentMenuItem.getCategory()-1);
@@ -151,7 +151,7 @@ public class DialogMenuRecordEdit {
 		gridData.widthHint = 400;
 		textDescr.setLayoutData(gridData);
 		textDescr.setTextLimit(80);
-		textDescr.setText(currentMenuItem.getDescr());
+		textDescr.setText(currentMenuItem.getDescription());
 		textDescr.setData("index", new Integer(3));
 		textDescr.addListener (SWT.Verify, new Listener () {
 			public void handleEvent (Event e) {
@@ -231,7 +231,7 @@ public class DialogMenuRecordEdit {
 		labelAv.setText(columnLabels[5]);
 		
 		final Button availButton = new Button(shell, SWT.CHECK);
-		availButton.setSelection(currentMenuItem.getAvail());
+		availButton.setSelection(currentMenuItem.getAvailability());
 		availButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				//System.out.println("Combo");
@@ -271,11 +271,11 @@ public class DialogMenuRecordEdit {
 				
 				// Store MenuItem Availability
 				changesAvailability = availButton.getSelection();
-				currentMenuItem.setAvail(changesAvailability);
+				currentMenuItem.setAvailability(changesAvailability);
 				
 				// Store MenuItem Description
 				str = textDescr.getText().trim();
-				currentMenuItem.setDescr(str);
+				currentMenuItem.setDescription(str);
 				
 				// Store MenuItem Price
 				double d;

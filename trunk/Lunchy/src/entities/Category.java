@@ -1,42 +1,76 @@
 package entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "category")
 public class Category {
-	private int ID;
-	private String name;
-	
 	private static int curID = 1;
 	
-	public Category() {
-		
-	}
+	@Id
+	@Column(name = "id")
+	private int id;
+	
+	@Column(name = "name")
+	private String name;
+	
+	@OneToMany
+	@JoinColumn(name="category_id")
+	private Set<MenuItem> menuItems = new HashSet<>();
+	
+	public Category() {	}
 	
 	public Category(int id, String name) {
-		ID = id;
+		this.id = id;
 		this.name = name;
 	}
 	
 	public Category(String name) {
-		ID = newId();
+		id = newId();
 		this.name = name;
 	}
 	
-	public int getID() {
-		return ID;
+	public int getId() {
+		return id;
 	}
 	
 	public String getName() {
 		return name;
 	}
 	
+	public Set<MenuItem> getMenuItems() {
+		return menuItems;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void setMenuItems(Set<MenuItem> menuItems) {
+		this.menuItems = menuItems;
+	}
+	
 	public String[] toStringArray() {
 		String[] result = new String[2];
-		result[0] = String.valueOf(ID);
+		result[0] = String.valueOf(id);
 		result[1] = name;
 		return result;		
 	}
 	
 	public String toString() {
-		return String.valueOf(ID)+" "+name;
+		return String.valueOf(id)+" "+name;
 	}
 	
 	

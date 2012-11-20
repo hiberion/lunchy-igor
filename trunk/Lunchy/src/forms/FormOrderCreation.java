@@ -164,7 +164,7 @@ public class FormOrderCreation {
 		categoryCombo.setLayoutData(gridData);
 		String[] comboData = new String[LunchyMain.categoryDAO.getAllCategory().size()];
 		for (Category cat: LunchyMain.categoryDAO.getAllCategory()) {
-			comboData[cat.getID()] = cat.getName();
+			comboData[cat.getId()] = cat.getName();
 		}
 		categoryCombo.setItems(comboData);
 		categoryCombo.select(0);

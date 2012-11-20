@@ -1,19 +1,43 @@
 package entities;
 
 import java.util.ArrayList;
-import igor.lunchy.Column;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+//import javax.persistence.JoinColumn;
+//import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "menuitem")
 public class MenuItem {
-	@Column(name = "ID")
-	private int ID;
-	private String name = "";
-	private int category = 0;
-	private String descript = "";
-	private double price = 0.0;
-	private boolean avail = true;
-
 	private static int curID = 1;
-		
+	
+	@Id
+	@Column(name = "id")
+	private int id;
+	
+	@Column(name = "name")
+	private String name;
+	
+	@Column(name = "category_id")
+	private int categoryId;
+	
+	@Column(name = "description")
+	private String description;
+	
+	@Column(name = "price")
+	private double price;
+	
+	@Column(name = "availability")
+	private boolean availability;
+	
+	public MenuItem() { }
+	
+	public int getId() {
+		return id;
+	}
 	
 	public double getPrice() {
 		return price;
@@ -23,20 +47,20 @@ public class MenuItem {
 		return name;
 	}
 	
-	public String getDescr() {
-		return descript;
+	public String getDescription() {
+		return description;
 	}
 	
 	public int getCategory() {
-		return category;
+		return categoryId;
 	}
 	
-	public boolean getAvail() {
-		return avail;
+	public boolean getAvailability() {
+		return availability;
 	}
 	
-	public int getID() {
-		return ID;
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	public void setName(String name) {
@@ -47,34 +71,34 @@ public class MenuItem {
 		this.price = price;
 	}
 	
-	public void setDescr(String descript) {
-		this.descript = descript;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
-	public void setAvail(boolean av) {
-		this.avail = av;
+	public void setAvailability(boolean availability) {
+		this.availability = availability;
 	}
 	
-	public void setCategory(int cat) {
-		this.category = cat;
+	public void setCategory(int category) {
+		this.categoryId = category;
 	}
 	
-	public MenuItem(int id, String name, int cat, String desc, double price,  boolean avail) {
-		this.ID = id;
+	public MenuItem(int id, String name, int category, String desc, double price,  boolean avail) {
+		this.id = id;
 		this.name = name;
-		this.category = cat;
-		this.descript = desc;
+		this.categoryId = category;
+		this.description = desc;
 		this.price = price;
-		this.avail = avail;	
+		this.availability = avail;	
 	}
 	
 	public MenuItem(MenuItem menuItem) {
-		ID = menuItem.ID;
+		id = menuItem.id;
 		name = menuItem.name;
-		category = menuItem.category;
-		descript = menuItem.descript;
+		categoryId = menuItem.categoryId;
+		description = menuItem.description;
 		price = menuItem.price;
-		avail = menuItem.avail;
+		availability = menuItem.availability;
 	}
 	
 	static public ArrayList<MenuItem> byName(ArrayList<MenuItem> inAr, String name) {
@@ -98,7 +122,7 @@ public class MenuItem {
 	static public ArrayList<MenuItem> findByAvail(ArrayList<MenuItem> inAr, boolean av) {
 		ArrayList<MenuItem> result = new ArrayList<>();
 		for (MenuItem mi: inAr) {
-			if (mi.getAvail() == av)
+			if (mi.getAvailability() == av)
 				result.add(mi);
 		}
 		return result;
@@ -106,12 +130,12 @@ public class MenuItem {
 	
 	public String[] toStringArray() {
 		String[] result = new String[6];
-		result[0] = String.valueOf(ID);
+		result[0] = String.valueOf(id);
 		result[1] = name;
-		result[2] = String.valueOf(category);
-		result[3] = descript;
+		result[2] = String.valueOf(categoryId);
+		result[3] = description;
 		result[4] = String.valueOf(price);
-		result[5] = avail ? "Y" : "N";
+		result[5] = availability ? "Y" : "N";
 		return result;		
 	}
 	
@@ -120,15 +144,15 @@ public class MenuItem {
 		return p[0]+" "+p[1]+" "+p[2]+" "+p[3]+" "+p[4]+" "+p[5];
 	}
 	
-	public MenuItem() {
+	/*public MenuItem() {
 		super();
-		ID = curID;
+		id = curID;
 		name = "Name";
 		category = 0;
-		descript = "Description";
+		description = "Description";
 		price = 0.0;
-		avail = true;
-	}
+		availability = true;
+	}*/
 	
 	public synchronized static int newId() {
 		return curID++;

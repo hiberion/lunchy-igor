@@ -103,7 +103,7 @@ public class FormMenuListEdit {
 			temp = currentMenuList.get(i).toStringArray();
 			temp[2] = LunchyMain.categoryDAO.getAllCategory().get(currentMenuList.get(i).getCategory()).getName();
 			//temp[2] = "777";
-			temp[5] = currentMenuList.get(i).getAvail() ? "Доступен" : "Не доступен";
+			temp[5] = currentMenuList.get(i).getAvailability() ? "Доступен" : "Не доступен";
 			item.setText(temp);
 			//item.setForeground(clGreen);
 		}			
@@ -200,7 +200,7 @@ public class FormMenuListEdit {
 		categoryCombo = new Combo(shell, SWT.NONE | SWT.READ_ONLY);
 		String[] comboData = new String[LunchyMain.categoryDAO.getAllCategory().size()];
 		for (Category cat: LunchyMain.categoryDAO.getAllCategory()) {
-			comboData[cat.getID()] = cat.getName();
+			comboData[cat.getId()] = cat.getName();
 		}
 		
 		categoryCombo.setItems(comboData);
@@ -276,9 +276,9 @@ public class FormMenuListEdit {
 			temp[2] = LunchyMain.categoryDAO.getAllCategory().get(currentMenuList.get(i).getCategory()).getName();
 			//temp[2] = LunchyMain.categoryList.get(currentMenuList.get(i).getCategory()).getName();
 			//temp[2] = "888";
-			temp[5] = currentMenuList.get(i).getAvail() ? "Доступен" : "Не доступен";
+			temp[5] = currentMenuList.get(i).getAvailability() ? "Доступен" : "Не доступен";
 			//item.setForeground(currentMenuList.get(i).getAvail() ? clGreen : clDarkGrey);
-			if (!currentMenuList.get(i).getAvail())
+			if (!currentMenuList.get(i).getAvailability())
 				item.setBackground(clRed);
 			item.setText(temp);
 		}

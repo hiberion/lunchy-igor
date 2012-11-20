@@ -15,6 +15,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
+import entities.MenuItem;
 import forms.*;
 import dao.*;
 
@@ -94,6 +95,21 @@ public class LunchyMain {
 			//return;
 		}
 		
+		//// DEBUG  &   TEST
+		//IMorderDAO morderDAO = daoFactory.getMorderDAO();
+		//Morder morder = morderDAO.getMorderByID(2);
+		//System.out.println(morder.getId() + " " + morder.getSumma() + " " + morder.getClientId());
+		//Category category = categoryDAO.getCategoryByID(1);
+		//System.out.println(category.getId() + " " + category.getName());
+		MenuItem mi = menuItemDAO.getMenuItemByID(11);
+		System.out.println(mi.getId() + " " + mi.getName());
+		
+		ArrayList<MenuItem> menu = menuItemDAO.getAllMenuItem();
+		for (MenuItem item : menu) {
+			System.out.println(item.toString());
+		}
+		
+		///////////////////////////
 		
 		// (DEBUG)
 		//MenuItem mi = new MenuItem(7, "YYY", 3, "XXX", 12.3, true);
