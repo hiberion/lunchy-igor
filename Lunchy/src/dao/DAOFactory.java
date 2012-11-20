@@ -10,7 +10,7 @@ public class DAOFactory implements IDAOFactory {
 	public IGeneralOrderDAO getGeneralOrderDAO() { return null; };
 	public IPersonalOrderDAO getPersonalOrderDAO() { return null; };
 	public IMenuItemPersonalOrderDAO getMenuItemPersonalOrderDAO() { return null; };
-	
+		
 	
 	public DAOFactory() {
 	}

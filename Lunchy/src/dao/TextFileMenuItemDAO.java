@@ -92,7 +92,7 @@ public class TextFileMenuItemDAO implements IMenuItemDAO {
 
 	@Override
 	public boolean updateMenuItem(MenuItem menuItem) {
-		collection.set(menuItem.getID(), menuItem);
+		collection.set(menuItem.getId(), menuItem);
 		return true;
 	}
 
@@ -118,7 +118,7 @@ public class TextFileMenuItemDAO implements IMenuItemDAO {
 	public ArrayList<MenuItem> getMenuItemByAvailability(boolean avail) {
 		ArrayList<MenuItem> result = new ArrayList<>();
 		for (MenuItem mi: collection) {
-			if (mi.getAvail() == avail)
+			if (mi.getAvailability() == avail)
 				result.add(mi);
 		}
 		return result;

@@ -64,6 +64,14 @@
 			</manifest>
 			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/swt.jar"/>
 			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/postgresql-9.1-901.jdbc4.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/antlr-2.7.7.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/dom4j-1.6.1.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/hibernate-commons-annotations-4.0.1.Final.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/hibernate-core-4.1.7.Final.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/javassist-3.15.0-GA.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/jboss-logging-3.1.0.GA.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
 			<zipfileset dir="${src.dir}" includes="lunchy_en.properties"/>
 			<zipfileset dir="${src.dir}" includes="lunchy_ru.properties"/>
 		</jar>
@@ -76,6 +84,14 @@
 				</manifest>
 				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/swt_x64.jar"/>
 				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/postgresql-9.1-901.jdbc4.jar"/>
+			    <zipfileset excludes="META-INF/*.SF" src="${lib.dir}/antlr-2.7.7.jar"/>
+				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/dom4j-1.6.1.jar"/>
+				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/hibernate-commons-annotations-4.0.1.Final.jar"/>
+				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/hibernate-core-4.1.7.Final.jar"/>
+				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
+				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/javassist-3.15.0-GA.jar"/>
+				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/jboss-logging-3.1.0.GA.jar"/>
+				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
 				<zipfileset dir="${src.dir}" includes="lunchy_en.properties"/>
 				<zipfileset dir="${src.dir}" includes="lunchy_ru.properties"/>
 			</jar>

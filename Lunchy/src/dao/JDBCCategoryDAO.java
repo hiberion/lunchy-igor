@@ -39,7 +39,7 @@ public class JDBCCategoryDAO implements ICategoryDAO {
 		
 		ArrayList<Category> result = new ArrayList<>();
 		
-		String queryTarget = "select * from category";
+		String queryTarget = "select * from category order by id";
 
 		final List<String[]> rsResult = new ArrayList<>();
 		
