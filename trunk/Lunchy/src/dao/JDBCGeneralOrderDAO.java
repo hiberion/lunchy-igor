@@ -33,7 +33,7 @@ public class JDBCGeneralOrderDAO implements IGeneralOrderDAO {
 		
 		String query =
 				"insert into general_order (id, date) values("+
-						generalOrder.getID() + ",'" +
+						generalOrder.getId() + ",'" +
 						generalOrder.getOrderDate() + "')";
 		//System.out.println(query);
 		
@@ -52,14 +52,14 @@ public class JDBCGeneralOrderDAO implements IGeneralOrderDAO {
 
 	@Override
 	public boolean updateGeneralOrder(GeneralOrder generalOrder) {
-		collection.set(generalOrder.getID(), generalOrder);
+		collection.set(generalOrder.getId(), generalOrder);
 		
 		int ret = 0;  // for result
 		
 		String query =
 				"update general_order set " +
 				"date = '" + generalOrder.getOrderDate() + "'," + 
-				" where id = " + generalOrder.getID();
+				" where id = " + generalOrder.getId();
 		//System.out.println(query);
 		
 		try {
@@ -81,7 +81,7 @@ public class JDBCGeneralOrderDAO implements IGeneralOrderDAO {
 	public GeneralOrder getGeneralOrderByID(int ID) {
 		GeneralOrder result = null;
 		for (GeneralOrder generalOrder: collection) {
-			if (generalOrder.getID() == ID) {
+			if (generalOrder.getId() == ID) {
 				result = generalOrder;
 				break;
 			}

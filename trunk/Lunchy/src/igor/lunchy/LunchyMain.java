@@ -104,10 +104,10 @@ public class LunchyMain {
 		MenuItem mi = menuItemDAO.getMenuItemByID(11);
 		System.out.println(mi.getId() + " " + mi.getName());
 		
-		ArrayList<MenuItem> menu = menuItemDAO.getAllMenuItem();
+		/*ArrayList<MenuItem> menu = menuItemDAO.getAllMenuItem();
 		for (MenuItem item : menu) {
 			System.out.println(item.toString());
-		}
+		}*/
 		
 		///////////////////////////
 		

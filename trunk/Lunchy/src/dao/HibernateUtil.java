@@ -26,7 +26,11 @@ public class HibernateUtil {
 		
 		Configuration config = new Configuration().configure()
 	        	.addAnnotatedClass(entities.MenuItem.class)
-	        	.addAnnotatedClass(entities.Category.class);
+	        	.addAnnotatedClass(entities.MenuItemPersonalOrder.class)
+	        	.addAnnotatedClass(entities.Category.class)
+				.addAnnotatedClass(entities.PersonalOrder.class)
+				.addAnnotatedClass(entities.Worker.class)
+				.addAnnotatedClass(entities.GeneralOrder.class);
 	        	//.addAnnotatedClass(Client.class);
 				//.addAnnotatedClass(entities.Morder.class)
 		ServiceRegistry serviceRegistry = new ServiceRegistryBuilder()

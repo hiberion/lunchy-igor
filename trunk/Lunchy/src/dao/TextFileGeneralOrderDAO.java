@@ -77,7 +77,7 @@ public class TextFileGeneralOrderDAO implements IGeneralOrderDAO {
 
 	@Override
 	public boolean updateGeneralOrder(GeneralOrder generalOrder) {
-		collection.set(generalOrder.getID(), generalOrder);
+		collection.set(generalOrder.getId(), generalOrder);
 		return true;
 	}
 
@@ -85,7 +85,7 @@ public class TextFileGeneralOrderDAO implements IGeneralOrderDAO {
 	public GeneralOrder getGeneralOrderByID(int ID) {
 		GeneralOrder result = null;
 		for (GeneralOrder generalOrder: collection) {
-			if (generalOrder.getID() == ID) {
+			if (generalOrder.getId() == ID) {
 				result = generalOrder;
 				break;
 			}

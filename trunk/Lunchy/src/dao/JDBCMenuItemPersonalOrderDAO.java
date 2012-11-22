@@ -36,8 +36,8 @@ public class JDBCMenuItemPersonalOrderDAO implements
 		
 		String query =
 				"insert into menuitem_personalorder (menuitem_id, personalorder_id, count) values("+
-						menuItemPersonalOrder.getMenuItemID() + "," +
-						menuItemPersonalOrder.getPersonalOrderID() + "," +
+						menuItemPersonalOrder.getMenuItemId() + "," +
+						menuItemPersonalOrder.getPersonalOrderId() + "," +
 						menuItemPersonalOrder.getItemCount() + ")";
 		//System.out.println(query);
 		
@@ -61,8 +61,8 @@ public class JDBCMenuItemPersonalOrderDAO implements
 		
 		int updatingItem = -1; 
 		for (int i = 0; i < collection.size(); i++) {
-			if ((collection.get(i).getMenuItemID() == menuItemPersonalOrder.getMenuItemID()) &&
-				(collection.get(i).getPersonalOrderID() == menuItemPersonalOrder.getPersonalOrderID())) {
+			if ((collection.get(i).getMenuItemId() == menuItemPersonalOrder.getMenuItemId()) &&
+				(collection.get(i).getPersonalOrderId() == menuItemPersonalOrder.getPersonalOrderId())) {
 				updatingItem = i;
 				break;
 			}
@@ -76,11 +76,11 @@ public class JDBCMenuItemPersonalOrderDAO implements
 			
 			String query =
 					"update menuitem_personalorder set " +
-					"menuitem_id = " + menuItemPersonalOrder.getMenuItemID() + "," +
-					"personalorder_id = " + menuItemPersonalOrder.getPersonalOrderID() + "," +
+					"menuitem_id = " + menuItemPersonalOrder.getMenuItemId() + "," +
+					"personalorder_id = " + menuItemPersonalOrder.getPersonalOrderId() + "," +
 					"count = " + menuItemPersonalOrder.getItemCount() +
-					" where menuitem_id = " + menuItemPersonalOrder.getMenuItemID() + " and " + 
-					" personalorder_id = " + menuItemPersonalOrder.getPersonalOrderID();
+					" where menuitem_id = " + menuItemPersonalOrder.getMenuItemId() + " and " + 
+					" personalorder_id = " + menuItemPersonalOrder.getPersonalOrderId();
 			//System.out.println(query);
 			
 			try {
@@ -101,7 +101,7 @@ public class JDBCMenuItemPersonalOrderDAO implements
 	public MenuItemPersonalOrder getMenuItemPersonalOrderByMenuItemID(int ID) {
 		MenuItemPersonalOrder result = null;
 		for (MenuItemPersonalOrder menuItemPersonalOrder: collection) {
-			if (menuItemPersonalOrder.getMenuItemID() == ID) {
+			if (menuItemPersonalOrder.getMenuItemId() == ID) {
 				result = menuItemPersonalOrder;
 				break;
 			}
@@ -121,8 +121,8 @@ public class JDBCMenuItemPersonalOrderDAO implements
 		
 		int deletingItem = -1;
 		for (int i = 0; i < collection.size(); i++) {
-			if ((collection.get(i).getMenuItemID() == menuItemID) &&
-				(collection.get(i).getPersonalOrderID() == personalOrderID)) {
+			if ((collection.get(i).getMenuItemId() == menuItemID) &&
+				(collection.get(i).getPersonalOrderId() == personalOrderID)) {
 				deletingItem = i;
 				break;
 			}
@@ -135,8 +135,8 @@ public class JDBCMenuItemPersonalOrderDAO implements
 			
 			String query =
 					"delete from menuitem_personalorder where "+
-							"menuitem_id = " + collection.get(deletingItem).getMenuItemID() + " and " +
-							"personalorder_id = " + collection.get(deletingItem).getPersonalOrderID();
+							"menuitem_id = " + collection.get(deletingItem).getMenuItemId() + " and " +
+							"personalorder_id = " + collection.get(deletingItem).getPersonalOrderId();
 			//System.out.println(query);
 			
 			try {
@@ -204,7 +204,7 @@ public class JDBCMenuItemPersonalOrderDAO implements
 			int personalOrderID) {
 		MenuItemPersonalOrder result = null;
 		for (MenuItemPersonalOrder menuItemPersonalOrder: collection) {
-			if (menuItemPersonalOrder.getPersonalOrderID() == personalOrderID) {
+			if (menuItemPersonalOrder.getPersonalOrderId() == personalOrderID) {
 				result = menuItemPersonalOrder;
 				break;
 			}

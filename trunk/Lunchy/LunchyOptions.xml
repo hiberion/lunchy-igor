@@ -15,5 +15,5 @@
 <entry key="SingleOrderMaxSum">500</entry>
 <entry key="LastTimeSendOrder">18:15</entry>
 <entry key="MenuExpirationTime">48</entry>
-<entry key="DataSource">Hibernate</entry>
+<entry key="DataSource">JDBC</entry>
 </properties>

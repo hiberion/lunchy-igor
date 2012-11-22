@@ -71,8 +71,8 @@ public class TextFileMenuItemPersonalOrderDAO implements IMenuItemPersonalOrderD
 		//collection.set(men.getID(), personalOrder);
 		int updatingItem = -1; 
 		for (int i = 0; i < collection.size(); i++) {
-			if ((collection.get(i).getMenuItemID() == menuItemPersonalOrder.getMenuItemID()) &&
-				(collection.get(i).getPersonalOrderID() == menuItemPersonalOrder.getPersonalOrderID())) {
+			if ((collection.get(i).getMenuItemId() == menuItemPersonalOrder.getMenuItemId()) &&
+				(collection.get(i).getPersonalOrderId() == menuItemPersonalOrder.getPersonalOrderId())) {
 				updatingItem = i;
 				break;
 			}
@@ -89,7 +89,7 @@ public class TextFileMenuItemPersonalOrderDAO implements IMenuItemPersonalOrderD
 	public MenuItemPersonalOrder getMenuItemPersonalOrderByMenuItemID(int ID) {
 		MenuItemPersonalOrder result = null;
 		for (MenuItemPersonalOrder menuItemPersonalOrder: collection) {
-			if (menuItemPersonalOrder.getMenuItemID() == ID) {
+			if (menuItemPersonalOrder.getMenuItemId() == ID) {
 				result = menuItemPersonalOrder;
 				break;
 			}
@@ -102,8 +102,8 @@ public class TextFileMenuItemPersonalOrderDAO implements IMenuItemPersonalOrderD
 			int personalOrderID) {
 		int deletingItem = -1;
 		for (int i = 0; i < collection.size(); i++) {
-			if ((collection.get(i).getMenuItemID() == menuItemID) &&
-				(collection.get(i).getPersonalOrderID() == personalOrderID)) {
+			if ((collection.get(i).getMenuItemId() == menuItemID) &&
+				(collection.get(i).getPersonalOrderId() == personalOrderID)) {
 				deletingItem = i;
 				break;
 			}
@@ -121,7 +121,7 @@ public class TextFileMenuItemPersonalOrderDAO implements IMenuItemPersonalOrderD
 			int personalOrderID) {
 		MenuItemPersonalOrder result = null;
 		for (MenuItemPersonalOrder menuItemPersonalOrder: collection) {
-			if (menuItemPersonalOrder.getPersonalOrderID() == personalOrderID) {
+			if (menuItemPersonalOrder.getPersonalOrderId() == personalOrderID) {
 				result = menuItemPersonalOrder;
 				break;
 			}

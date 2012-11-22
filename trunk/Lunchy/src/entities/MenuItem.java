@@ -1,10 +1,14 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 //import javax.persistence.JoinColumn;
 //import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -33,7 +37,19 @@ public class MenuItem {
 	@Column(name = "availability")
 	private boolean availability;
 	
+	@OneToMany
+	@JoinColumn(name="menuitem_id")
+	private Set<MenuItemPersonalOrder> menuItemPersonalOrder = new HashSet<>();
+	
 	public MenuItem() { }
+	
+	public void setMenuItemPersonalOrder(Set<MenuItemPersonalOrder> value) {
+		this.menuItemPersonalOrder = value;
+	}
+	
+	public Set<MenuItemPersonalOrder> getMenuItemPersonalOrder() {
+		return menuItemPersonalOrder;
+	}
 	
 	public int getId() {
 		return id;
