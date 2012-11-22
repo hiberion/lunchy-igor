@@ -75,8 +75,8 @@ public class FormOrderCreation {
 			currentGeneralOrderID = id;
 		}
 		else {
-			System.out.println(generalOrder.getID() + " " + generalOrder.getOrderDate());
-			currentGeneralOrderID = generalOrder.getID();
+			System.out.println(generalOrder.getId() + " " + generalOrder.getOrderDate());
+			currentGeneralOrderID = generalOrder.getId();
 		}
 		
 		
@@ -308,7 +308,7 @@ public class FormOrderCreation {
 		workerCombo.setLayoutData(gridData);
 		comboData = new String[LunchyMain.workerDAO.getAllWorker().size()];
 		for (Worker wr: LunchyMain.workerDAO.getAllWorker()) {
-			comboData[wr.getID()] = wr.getName();
+			comboData[wr.getId()] = wr.getName();
 		}
 		workerCombo.setItems(comboData);
 		workerCombo.select(0);
@@ -575,10 +575,10 @@ public class FormOrderCreation {
 		// 
 		ArrayList<Integer> miList = new ArrayList<>();
 		for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
-			if (po.getGeneralOrderID() == curGeneralOrderID) {
+			if (po.getGeneralOrderId() == curGeneralOrderID) {
 				for (MenuItemPersonalOrder mi_po : LunchyMain.menuItemPersonalOrderDAO.getAllMenuItemPersonalOrder()) {
-					if (mi_po.getPersonalOrderID() == po.getID())
-						miList.add(mi_po.getMenuItemID());
+					if (mi_po.getPersonalOrderId() == po.getId())
+						miList.add(mi_po.getMenuItemId());
 				}
 			}
 		}
@@ -610,13 +610,13 @@ public class FormOrderCreation {
 			tableOrder2.setItemCount(0);
 			
 			for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
-				if (po.getGeneralOrderID() == curGeneralOrderID) {
+				if (po.getGeneralOrderId() == curGeneralOrderID) {
 					for (MenuItemPersonalOrder mi_po : LunchyMain.menuItemPersonalOrderDAO.getAllMenuItemPersonalOrder()) {
-						if (mi_po.getPersonalOrderID() == po.getID()) {
-							if (mi_po.getMenuItemID() == comboIndexes[menuItemID]) {
+						if (mi_po.getPersonalOrderId() == po.getId()) {
+							if (mi_po.getMenuItemId() == comboIndexes[menuItemID]) {
 								String[] temp = new String[2];
 								TableItem item = new TableItem(tableOrder2, SWT.NONE);
-								temp[0] = LunchyMain.workerDAO.getAllWorker().get(po.getWorkerID()).getName();
+								temp[0] = LunchyMain.workerDAO.getAllWorker().get(po.getWorkerId()).getName();
 								temp[1] = String.valueOf(mi_po.getItemCount());
 								item.setText(temp);
 							}
@@ -644,10 +644,10 @@ public class FormOrderCreation {
 		
 		// Checking existance PersonalOrder Entry
 		for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
-			if (po.getGeneralOrderID() == curGeneralOrderID)
-				if (po.getWorkerID() == workerID) {
+			if (po.getGeneralOrderId() == curGeneralOrderID)
+				if (po.getWorkerId() == workerID) {
 					/// Entry exists 
-					curPersonalOrderID = po.getID();
+					curPersonalOrderID = po.getId();
 					checkPersonalOrderByWorker = true;
 					break;
 				}
@@ -664,14 +664,14 @@ public class FormOrderCreation {
 			tableOrder.setItemCount(0);
 			
 			for (MenuItemPersonalOrder mi_po : LunchyMain.menuItemPersonalOrderDAO.getAllMenuItemPersonalOrder()) {
-				if (mi_po.getPersonalOrderID() == curPersonalOrderID) {
+				if (mi_po.getPersonalOrderId() == curPersonalOrderID) {
 					
 					String[] temp = new String[5];
 					TableItem item = new TableItem(tableOrder, SWT.NONE);
-					temp[0] = String.valueOf(mi_po.getMenuItemID());
-					temp[1] = LunchyMain.menuItemDAO.getAllMenuItem().get(mi_po.getMenuItemID()).getName();
-					temp[2] = LunchyMain.categoryDAO.getAllCategory().get(LunchyMain.menuItemDAO.getAllMenuItem().get(mi_po.getMenuItemID()).getCategory()).getName();
-					temp[3] = String.valueOf((LunchyMain.menuItemDAO.getAllMenuItem().get(mi_po.getMenuItemID()).getPrice()) * (mi_po.getItemCount()));
+					temp[0] = String.valueOf(mi_po.getMenuItemId());
+					temp[1] = LunchyMain.menuItemDAO.getAllMenuItem().get(mi_po.getMenuItemId()).getName();
+					temp[2] = LunchyMain.categoryDAO.getAllCategory().get(LunchyMain.menuItemDAO.getAllMenuItem().get(mi_po.getMenuItemId()).getCategory()).getName();
+					temp[3] = String.valueOf((LunchyMain.menuItemDAO.getAllMenuItem().get(mi_po.getMenuItemId()).getPrice()) * (mi_po.getItemCount()));
 					temp[4] = String.valueOf(mi_po.getItemCount());
 					item.setText(temp);
 					amount += Double.parseDouble(temp[3]);
@@ -697,10 +697,10 @@ public class FormOrderCreation {
 		
 		// Checking existance PersonalOrder Entry
 		for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
-			if (po.getGeneralOrderID() == curGeneralOrderID)
-				if (po.getWorkerID() == workerID) {
+			if (po.getGeneralOrderId() == curGeneralOrderID)
+				if (po.getWorkerId() == workerID) {
 					/// Entry exists 
-					curPersonalOrderID = po.getID();
+					curPersonalOrderID = po.getId();
 					checkPersonalOrderByWorker = true;
 					break;
 				}
@@ -710,8 +710,8 @@ public class FormOrderCreation {
 		if (checkPersonalOrderByWorker) {
 			/// Personal Order entry exists
 			for (MenuItemPersonalOrder mi_po : LunchyMain.menuItemPersonalOrderDAO.getAllMenuItemPersonalOrder()) {
-				if (mi_po.getMenuItemID() == menuItemID)
-					if (mi_po.getPersonalOrderID() == curPersonalOrderID) {
+				if (mi_po.getMenuItemId() == menuItemID)
+					if (mi_po.getPersonalOrderId() == curPersonalOrderID) {
 						mi_po.setItemCount(mi_po.getItemCount() + count); // Adding count to existing entry
 						LunchyMain.menuItemPersonalOrderDAO.updateMenuItemPersonalOrder(mi_po);
 						addmipoReq = false;
@@ -743,9 +743,9 @@ public class FormOrderCreation {
 		boolean res = false;
 		
 		for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
-			if (po.getGeneralOrderID() == curGeneralOrderID)
-				if (po.getWorkerID() == workerID) {
-					res = LunchyMain.menuItemPersonalOrderDAO.removeMenuItemPersonalOrder(menuItemID, po.getID());
+			if (po.getGeneralOrderId() == curGeneralOrderID)
+				if (po.getWorkerId() == workerID) {
+					res = LunchyMain.menuItemPersonalOrderDAO.removeMenuItemPersonalOrder(menuItemID, po.getId());
 				}
 		}
 		

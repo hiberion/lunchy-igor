@@ -30,6 +30,9 @@ public class HibernateMenuItemDAO implements IMenuItemDAO {
 			session.beginTransaction();
 			session.save(menuItem);
 			session.getTransaction().commit();
+			
+		} catch (Exception e) {
+			System.out.println("Error hibMenuItemDAO");
 
 		} finally {
 			if (session != null && session.isOpen()) {
@@ -50,6 +53,9 @@ public class HibernateMenuItemDAO implements IMenuItemDAO {
 			session.beginTransaction();
 			session.update(menuItem);
 			session.getTransaction().commit();
+			
+		} catch (Exception e) {
+			System.out.println("Error hibMenuItemDAO");
 
 		} finally {
 			if (session != null && session.isOpen()) {
@@ -88,6 +94,9 @@ public class HibernateMenuItemDAO implements IMenuItemDAO {
 			
 			//menuItems = session.createCriteria(MenuItem.class).list();
 			menuItems = session.createQuery("FROM MenuItem mi ORDER BY mi.id").list();
+			
+		} catch (Exception e) {
+			System.out.println("Error hibMenuItemDAO");
 
 		} finally {
 			if (session != null && session.isOpen()) {

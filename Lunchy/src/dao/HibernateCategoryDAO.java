@@ -41,13 +41,14 @@ public class HibernateCategoryDAO implements ICategoryDAO {
 			
 			//categories = session.createCriteria(Category.class).addOrder(Order.asc("id")).list();
 			categories = session.createQuery("FROM Category cat ORDER BY cat.id").list();
-
+			
 		} finally {
 			if (session != null && session.isOpen()) {
 				session.close();
 			}
-		}
+		}		
 		result = (ArrayList<Category>) categories;
+		
 		return result;
 	}
 

@@ -1,22 +1,58 @@
 package entities;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "personal_order")
 public class PersonalOrder {
-	private int ID;
-	private int workerID;
-	private int generalOrderID;
+	
+	@Id
+	@Column(name = "id")
+	private int id;
+	
+	@Column(name = "worker_id")
+	private int workerId;
+	
+	@Column(name = "gen_order_id")
+	private int generalOrderId;
 	//private double orderSum;
 	
 	private static int curID = 0;
 	
-	public PersonalOrder() {
-		
-	}
+	public PersonalOrder() {  }
 	
 	public PersonalOrder(int id, int wID, int goID) {
-		ID = id;
-		workerID = wID;
-		generalOrderID = goID;
+		this.id = id;
+		workerId = wID;
+		generalOrderId = goID;
 		//orderSum = 0.0;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public int getWorkerId() {
+		return workerId;
+	}
+	
+	public void setWorkerrId(int workerId) {
+		this.workerId = workerId;
+	}
+	
+	public int getGeneralOrderId() {
+		return generalOrderId;
+	}
+	
+	public void setGeneralOrderId(int generalOrderId) {
+		this.generalOrderId = generalOrderId;
 	}
 	
 	public synchronized static int newId() {
@@ -26,43 +62,16 @@ public class PersonalOrder {
 		curID = maxId;
 	}
 	
-	public int getID() {
-		return ID;
-	}
-	public int getWorkerID() {
-		return workerID;
-	}
-	public int getGeneralOrderID() {
-		return generalOrderID;
-	}
-	/*
-	public double getOrderSum() {
-		return orderSum;
-	}
-	*/
-	
-	public void setWorkerID(int id) {
-		workerID = id;
-	}
-	public void setGeneralOrderID(int id) {
-		generalOrderID = id;
-	}
-	
-	/*
-	public void setOrderSum(double sum) {
-		orderSum = sum;
-	}
-	*/
 	
 	public String toString() {
-		return ID+" "+workerID+" "+generalOrderID;
+		return id+" "+workerId+" "+generalOrderId;
 	}
 	
 	public String[] toStringArray() {
 		String[] result = new String[3];
-		result[0] = String.valueOf(ID);
-		result[1] = String.valueOf(workerID);
-		result[2] = String.valueOf(generalOrderID);
+		result[0] = String.valueOf(id);
+		result[1] = String.valueOf(workerId);
+		result[2] = String.valueOf(generalOrderId);
 		return result;		
 	}
 }

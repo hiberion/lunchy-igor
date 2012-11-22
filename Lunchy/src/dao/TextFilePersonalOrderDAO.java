@@ -74,7 +74,7 @@ public class TextFilePersonalOrderDAO implements IPersonalOrderDAO {
 
 	@Override
 	public boolean updatePersonalOrder(PersonalOrder personalOrder) {
-		collection.set(personalOrder.getID(), personalOrder);
+		collection.set(personalOrder.getId(), personalOrder);
 		return true;
 	}
 
@@ -82,7 +82,7 @@ public class TextFilePersonalOrderDAO implements IPersonalOrderDAO {
 	public PersonalOrder getPersonalOrderByID(int ID) {
 		PersonalOrder result = null;
 		for (PersonalOrder personalOrder: collection) {
-			if (personalOrder.getID() == ID) {
+			if (personalOrder.getId() == ID) {
 				result = personalOrder;
 				break;
 			}
@@ -94,7 +94,7 @@ public class TextFilePersonalOrderDAO implements IPersonalOrderDAO {
 	public boolean removePersonalOrder(int ID) {
 		int deletingItem = -1;
 		for (int i = 0; i < collection.size(); i++) {
-			if (collection.get(i).getID() == ID) {
+			if (collection.get(i).getId() == ID) {
 				deletingItem = i;
 				break;
 			}

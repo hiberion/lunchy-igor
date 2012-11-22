@@ -6,7 +6,8 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 import igor.lunchy.LunchyMain;
-import igor.lunchy.PrintOrder;
+//import igor.lunchy.PrintOrder;
+import igor.lunchy.PrintOrder2;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
@@ -66,8 +67,8 @@ public class FormOrderSending {
 			currentGeneralOrderID = id;
 		}
 		else {
-			System.out.println(generalOrder.getID() + " " + generalOrder.getOrderDate());
-			currentGeneralOrderID = generalOrder.getID();
+			System.out.println(generalOrder.getId() + " " + generalOrder.getOrderDate());
+			currentGeneralOrderID = generalOrder.getId();
 		}
 		
 		getTableItems();
@@ -98,11 +99,11 @@ public class FormOrderSending {
 		ArrayList<Integer> miList = new ArrayList<>();
 		ArrayList<Integer> miListCount = new ArrayList<>();
 		for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
-			if (po.getGeneralOrderID() == curGeneralOrderID) {
+			if (po.getGeneralOrderId() == curGeneralOrderID) {
 				//personalOrders++;
 				for (MenuItemPersonalOrder mi_po : LunchyMain.menuItemPersonalOrderDAO.getAllMenuItemPersonalOrder()) {
-					if (mi_po.getPersonalOrderID() == po.getID()) {
-						miList.add(mi_po.getMenuItemID());
+					if (mi_po.getPersonalOrderId() == po.getId()) {
+						miList.add(mi_po.getMenuItemId());
 						miListCount.add(mi_po.getItemCount());
 					}
 				}
@@ -111,9 +112,9 @@ public class FormOrderSending {
 		
 		// Finding no empty personal ordrs
 		for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
-			if (po.getGeneralOrderID() == curGeneralOrderID) {
+			if (po.getGeneralOrderId() == curGeneralOrderID) {
 				MenuItemPersonalOrder result =
-						LunchyMain.menuItemPersonalOrderDAO.getMenuItemPersonalOrderByPersonalOrderID(po.getID());
+						LunchyMain.menuItemPersonalOrderDAO.getMenuItemPersonalOrderByPersonalOrderID(po.getId());
 				if (result != null) {
 					personalOrders++;
 					continue;
@@ -141,9 +142,9 @@ public class FormOrderSending {
 			String[] temp = new String[6];
 			TableItem item = new TableItem(table, SWT.NONE);
 			for (PersonalOrder po: LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
-				if (po.getGeneralOrderID() == curGeneralOrderID) {
+				if (po.getGeneralOrderId() == curGeneralOrderID) {
 					for (MenuItemPersonalOrder mi_po : LunchyMain.menuItemPersonalOrderDAO.getAllMenuItemPersonalOrder()) {
-						if ((mi_po.getPersonalOrderID() == po.getID()) & (mi_po.getMenuItemID() == mi_id)) {
+						if ((mi_po.getPersonalOrderId() == po.getId()) & (mi_po.getMenuItemId() == mi_id)) {
 							quant = quant + mi_po.getItemCount();
 						}						
 					}
@@ -321,7 +322,8 @@ public class FormOrderSending {
 					printData.add(res);
 				}
 				
-				PrintOrder.PrintGeneralOrder(shell, printData);
+				//PrintOrder.PrintGeneralOrder(shell, printData);
+				PrintOrder2.printGeneralOrder(printData);
 			}
 		});
 		

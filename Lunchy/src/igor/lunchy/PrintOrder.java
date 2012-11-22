@@ -91,8 +91,8 @@ public static boolean PrintPersonalOrders(Shell shell) {
 				gc.drawString(testString, leftMargin, topMargin);
 				int i = 130;
 				for (PersonalOrder po : LunchyMain.personalOrderDAO.getAllPersonalOrder()) {
-					String testString2 = po.getID() + " " + LunchyMain.workerDAO.getWorkerByID(po.getWorkerID()).getName() +
-							" " + po.getGeneralOrderID();
+					String testString2 = po.getId() + " " + LunchyMain.workerDAO.getWorkerByID(po.getWorkerId()).getName() +
+							" " + po.getGeneralOrderId();
 					@SuppressWarnings("unused")
 					Point extent2 = gc.stringExtent(testString2);
 					gc.drawString(testString2, leftMargin, topMargin + i);
@@ -108,6 +108,6 @@ public static boolean PrintPersonalOrders(Shell shell) {
 		}
 		
 		return true;
+		
 	}
-
 }

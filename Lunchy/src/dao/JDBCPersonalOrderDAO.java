@@ -33,9 +33,9 @@ public class JDBCPersonalOrderDAO implements IPersonalOrderDAO {
 		
 		String query =
 				"insert into personal_order (id, worker_id, gen_order_id) values("+
-						personalOrder.getID() + "," +
-						personalOrder.getWorkerID() + "," +
-						personalOrder.getGeneralOrderID() + ")";
+						personalOrder.getId() + "," +
+						personalOrder.getWorkerId() + "," +
+						personalOrder.getGeneralOrderId() + ")";
 		//System.out.println(query);
 		
 		try {
@@ -54,15 +54,15 @@ public class JDBCPersonalOrderDAO implements IPersonalOrderDAO {
 
 	@Override
 	public boolean updatePersonalOrder(PersonalOrder personalOrder) {
-		collection.set(personalOrder.getID(), personalOrder);
+		collection.set(personalOrder.getId(), personalOrder);
 		
 		int ret = 0;  // for result
 		
 		String query =
 				"update personal_order set " +
-				"worker_id = " + personalOrder.getWorkerID() + "," +
-				"gen_order_id = " + personalOrder.getGeneralOrderID() + "," +
-				" where id = " + personalOrder.getID();
+				"worker_id = " + personalOrder.getWorkerId() + "," +
+				"gen_order_id = " + personalOrder.getGeneralOrderId() + "," +
+				" where id = " + personalOrder.getId();
 		//System.out.println(query);
 		
 		try {
@@ -84,7 +84,7 @@ public class JDBCPersonalOrderDAO implements IPersonalOrderDAO {
 	public PersonalOrder getPersonalOrderByID(int ID) {
 		PersonalOrder result = null;
 		for (PersonalOrder personalOrder: collection) {
-			if (personalOrder.getID() == ID) {
+			if (personalOrder.getId() == ID) {
 				result = personalOrder;
 				break;
 			}
@@ -152,7 +152,7 @@ public class JDBCPersonalOrderDAO implements IPersonalOrderDAO {
 	public boolean removePersonalOrder(int ID) {
 		int deletingItem = -1;
 		for (int i = 0; i < collection.size(); i++) {
-			if (collection.get(i).getID() == ID) {
+			if (collection.get(i).getId() == ID) {
 				deletingItem = i;
 				break;
 			}
@@ -165,7 +165,7 @@ public class JDBCPersonalOrderDAO implements IPersonalOrderDAO {
 			
 			String query =
 					"delete from personal_order where "+
-							"id = " + collection.get(deletingItem).getID();
+							"id = " + collection.get(deletingItem).getId();
 			//System.out.println(query);
 			
 			try {

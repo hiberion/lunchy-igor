@@ -3,18 +3,61 @@ package entities;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "general_order")
 public class GeneralOrder {
-	private int ID;
+	
+	@Id
+	@Column(name = "id")
+	private int id;
+	
+	@Column(name = "date")
 	private String orderDate;
+	
+	@OneToMany
+	@JoinColumn(name="gen_order_id")
+	private Set<PersonalOrder> personalOrders = new HashSet<>();
 	
 	private static int curID = 1;
 	
-	public GeneralOrder() {	
+	public GeneralOrder() {	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public String getOrderDate() {
+		return orderDate;
+	}
+	
+	public void setOrderDate(String orderDate) {
+		this.orderDate = orderDate;
+	}
+	
+	public Set<PersonalOrder> getPersonalOrders() {
+		return personalOrders;
+	}
+	
+	public void setPersonalOrders(Set<PersonalOrder> value) {
+		this.personalOrders = value;
 	}
 	
 	public GeneralOrder(int id, String orderDate) {
-		ID = id;
+		this.id = id;
 		this.orderDate = orderDate;
 	}
 	
@@ -22,11 +65,11 @@ public class GeneralOrder {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		this.orderDate = sdf.format(orderDate);
-		this.ID = id;
+		this.id = id;
 	}
 	
 	public GeneralOrder(String orderDate) {
-		ID = newId();
+		id = newId();
 		this.orderDate = orderDate;
 	}
 	
@@ -41,23 +84,15 @@ public class GeneralOrder {
 		return date;
 	}
 	
-	public int getID() {
-		return ID;
-	}
-	
-	public String getOrderDate() {
-		return orderDate;
-	}
-	
 	public String[] toStringArray() {
 		String[] result = new String[2];
-		result[0] = String.valueOf(ID);
+		result[0] = String.valueOf(id);
 		result[1] = orderDate;
 		return result;		
 	}
 	
 	public String toString() {
-		return String.valueOf(ID)+" "+orderDate;
+		return String.valueOf(id)+" "+orderDate;
 	}
 	
 	
