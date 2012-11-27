@@ -158,13 +158,19 @@ public class FormMenuListEdit {
 		gridData = new GridData();
 		gridData.minimumWidth = 40;
 		validDate.setLayoutData(gridData);
+		//validDate.setDate(2011, 9, 24);
 		
-		Button checkBoxUpdate = new Button(shell, SWT.CHECK | SWT.LEFT_TO_RIGHT);
+		final Button checkBoxUpdate = new Button(shell, SWT.CHECK | SWT.LEFT_TO_RIGHT);
 		gridData = new GridData();
 		gridData.horizontalIndent = 30;
 		gridData.horizontalSpan = 2;
 		checkBoxUpdate.setText(resLunchy.getString("Menu_updated"));
 		checkBoxUpdate.setLayoutData(gridData);
+		checkBoxUpdate.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println(checkBoxUpdate.getSelection());
+			}
+		});
 		
 		Button btNewEntry = new Button(shell, SWT.PUSH);
 		gridData = new GridData();

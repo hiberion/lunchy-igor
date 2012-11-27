@@ -73,6 +73,7 @@
 			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/jboss-logging-3.1.0.GA.jar"/>
 			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
 			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/itextpdf-5.3.4.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/pdfbox-app-1.7.1.jar"/>
 			<zipfileset dir="${src.dir}" includes="arial.ttf"/>
 			<zipfileset dir="${src.dir}" includes="lunchy_en.properties"/>
 			<zipfileset dir="${src.dir}" includes="lunchy_ru.properties"/>
@@ -96,6 +97,7 @@
 				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/jboss-logging-3.1.0.GA.jar"/>
 				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
 				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/itextpdf-5.3.4.jar"/>
+				<zipfileset excludes="META-INF/*.SF" src="${lib.dir}/pdfbox-app-1.7.1.jar"/>
 				<zipfileset dir="${src.dir}" includes="arial.ttf"/>
 				<zipfileset dir="${src.dir}" includes="lunchy_en.properties"/>
 				<zipfileset dir="${src.dir}" includes="lunchy_ru.properties"/>

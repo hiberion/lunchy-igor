@@ -15,7 +15,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-import entities.MenuItem;
+//import entities.MenuItem;
 import forms.*;
 import dao.*;
 
@@ -27,6 +27,8 @@ public class LunchyMain {
 	public static String status = "";
 	public Label statusLabel;
 	public static Properties options;
+	
+	public static boolean menuAvailability = true;
 	
 	private static LunchyOptions lunchyOptions = new LunchyOptions();
 	
@@ -51,6 +53,11 @@ public class LunchyMain {
 	public static IGeneralOrderDAO generalOrderDAO;
 	public static IPersonalOrderDAO personalOrderDAO;
 	public static IMenuItemPersonalOrderDAO menuItemPersonalOrderDAO;
+	
+	
+	public static void setMenuAvailability(boolean value) {
+		menuAvailability = value;
+	}
 	
 	public static void main(String[] args) {
 		
@@ -101,8 +108,8 @@ public class LunchyMain {
 		//System.out.println(morder.getId() + " " + morder.getSumma() + " " + morder.getClientId());
 		//Category category = categoryDAO.getCategoryByID(1);
 		//System.out.println(category.getId() + " " + category.getName());
-		MenuItem mi = menuItemDAO.getMenuItemByID(11);
-		System.out.println(mi.getId() + " " + mi.getName());
+		//MenuItem mi = menuItemDAO.getMenuItemByID(11);
+		//System.out.println(mi.getId() + " " + mi.getName());
 		
 		/*ArrayList<MenuItem> menu = menuItemDAO.getAllMenuItem();
 		for (MenuItem item : menu) {
@@ -214,6 +221,7 @@ public class LunchyMain {
 		// "Make Order" button
 		Button btOrder = new Button(shell, SWT.PUSH);
 		btOrder.setText(resLunchy.getString("Make_order"));
+		btOrder.setEnabled(menuAvailability);
 		btOrder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				openFormOrderCreation();
@@ -238,7 +246,8 @@ public class LunchyMain {
 			public void widgetSelected(SelectionEvent e) {
 				//openEditMenu();
 				System.out.println("Printing the order");
-				PrintOrder.PrintPersonalOrders(shell);
+				//PrintOrder.PrintPersonalOrders(shell);
+				PrintOrder2.printPersonalOrders();
 			}
 		});
 		

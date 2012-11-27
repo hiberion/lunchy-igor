@@ -26,6 +26,7 @@ public class FormOrderSending {
 	
 	Shell shell;
 	private Table table;
+	private double totalGeneralOrderSum = 0;
 	
 	private int currentGeneralOrderID = 0;
 	
@@ -46,6 +47,7 @@ public class FormOrderSending {
 	
 	String[] columnNames = {columnLabels[0], columnLabels[1], columnLabels[2],
 			columnLabels[3], columnLabels[4], columnLabels[5]};
+	
 	
 	public FormOrderSending(Shell parent) {
 		shell = new Shell(parent, SWT.SHELL_TRIM);
@@ -170,6 +172,7 @@ public class FormOrderSending {
 		avgSum = (Math.round(avgSum * 100)) / 100;
 		avgOrderSumText.setText(String.valueOf(avgSum) + "\t\t" +
 			"(" + totalSum + " / " + personalOrders + " customers )");
+		totalGeneralOrderSum = totalSum;
 		
 	}
 
@@ -323,6 +326,7 @@ public class FormOrderSending {
 				}
 				
 				//PrintOrder.PrintGeneralOrder(shell, printData);
+				PrintOrder2.setGeneralOrderSum(totalGeneralOrderSum);
 				PrintOrder2.printGeneralOrder(printData);
 			}
 		});
