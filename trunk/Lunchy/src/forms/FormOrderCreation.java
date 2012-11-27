@@ -530,6 +530,7 @@ public class FormOrderCreation {
 		saveOrderButton.addSelectionListener(new SelectionAdapter() {		
 			public void widgetSelected(SelectionEvent e) {
 				refreshTabOrdedByTable(0);
+				shell.close();
 			}
 		});
 		
