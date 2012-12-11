@@ -26,6 +26,7 @@ public class LunchyOptions {
 		defauiltOptions.put("Language", "English");
 		defauiltOptions.put("DBPass", "sipher");
 		defauiltOptions.put("MenuExpirationDate", "2012-11-27");
+		defauiltOptions.put("MenuUpdated", "No");
 		
 		Properties result = new Properties(defauiltOptions);
 		FileInputStream fin = null;

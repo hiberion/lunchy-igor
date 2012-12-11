@@ -173,6 +173,22 @@ public class FormOrderSending {
 		avgOrderSumText.setText(String.valueOf(avgSum) + "\t\t" +
 			"(" + totalSum + " / " + personalOrders + " customers )");
 		totalGeneralOrderSum = totalSum;
+		int maxAmount = Integer.valueOf(LunchyMain.options.getProperty("SingleOrderMaxSum"));
+		if (avgSum > maxAmount) {
+			LunchyMain.showTrayToolTip("¬нимание", "—редн€€ сумма заказа превышает установленное среднее значение");
+		}
+		
+		int diffDiscount = Integer.valueOf(LunchyMain.options.getProperty("DiscountSummDiff"));
+		int diffSumm = Integer.valueOf(LunchyMain.options.getProperty("DiscountSumm"));
+		if (((diffSumm - totalSum) < diffDiscount) && (totalSum < diffSumm)) {
+			LunchyMain.showTrayToolTip("¬нимание", "»меет смысл заказать что-то еще дл€ получени€ скидки");
+		}
+		
+		int discountPercent = Integer.valueOf(LunchyMain.options.getProperty("DiscountPercent"));
+		if (totalSum >= diffSumm) {
+			totalSum = totalSum - (totalSum * (discountPercent/100.0));
+			totalOrderSumText.setText(totalOrderSumText.getText() + ".	”читыва€ скидку: " + totalSum);
+		}
 		
 	}
 

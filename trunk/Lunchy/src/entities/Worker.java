@@ -22,6 +22,15 @@ public class Worker {
 	@Column(name = "name")
 	private String name;
 	
+	//@Column(name = "name")
+	private String login;
+	
+	//@Column(name = "name")
+	private String password;
+	
+	//@Column(name = "name")
+	private int access;
+	
 	@OneToMany
 	@JoinColumn(name="worker_id")
 	private Set<PersonalOrder> personalOrders = new HashSet<>();

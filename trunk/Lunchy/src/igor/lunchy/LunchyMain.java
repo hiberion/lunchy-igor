@@ -7,6 +7,8 @@ package igor.lunchy;
 
 
 //import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.eclipse.swt.*;
@@ -24,11 +26,23 @@ import dao.*;
 public class LunchyMain {
 	
 	private Shell shell;
+	private static Button btMenuEditor;
+	private static Button btOrder;
+	private static Button btSendOrder;
+	private static Button btPrint;
+	private static Button btOptions;
+	
+	private static ToolTip tip = null;
+	private static Tray tray = null;
+	private static int logined = 0;
+	
+	private static boolean changed = false;
 	public static String status = "";
 	public Label statusLabel;
 	public static Properties options;
+	public static boolean orderSentStatus = false;
 	
-	public static boolean menuAvailability = true;
+	private static boolean makeOrderAvailability = false;
 	
 	private static LunchyOptions lunchyOptions = new LunchyOptions();
 	
@@ -55,13 +69,97 @@ public class LunchyMain {
 	public static IMenuItemPersonalOrderDAO menuItemPersonalOrderDAO;
 	
 	
-	public static void setMenuAvailability(boolean value) {
-		menuAvailability = value;
+	public static void setMakeOrderAvailability() {
+		System.out.println("setMakeOrderAvailability");
+		boolean menuUpdateStatus = getMenuUpdateStatus();
+		boolean dateNotExpired = true;
+		boolean timeNotExpired = true;
+		
+		Date menuExpirationDate = null;
+		Date menuExpirationTime = null;
+		
+		Date currentDate = new Date();
+		Date currentTime = new Date();
+		
+		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
+		
+		String tempDate = sdfDate.format(currentDate);
+		String tempTime = sdfTime.format(currentTime);
+		
+		System.out.println(tempDate);
+		System.out.println(tempTime);
+		
+		try {
+			menuExpirationDate = sdfDate.parse(getMenuExpirationDate());
+			menuExpirationTime = sdfTime.parse(options.getProperty("LastTimePreparationOrder"));
+			
+			currentDate = sdfDate.parse(tempDate);
+			currentTime = sdfTime.parse(tempTime);
+			//String tempTime2 = sdfTime.format(currentTime);
+			
+		} catch (ParseException e) {
+			System.out.println("Date Parse Error");
+		}
+		
+		if (currentDate.after(menuExpirationDate)) {
+			dateNotExpired = false;
+			System.out.println("Date expired");
+		}
+		if (currentTime.after(menuExpirationTime)) {
+			timeNotExpired = false;
+			System.out.println("Time expired");
+		}
+				
+		makeOrderAvailability = menuUpdateStatus && dateNotExpired && timeNotExpired;
+	}
+	
+	public static boolean getMenuAvailability() {
+		return makeOrderAvailability;
+	}
+	
+	
+	public static void setMenuUpdateStatus(boolean value) {
+		if (value) {
+			options.setProperty("MenuUpdated", "Yes");
+		} else {
+			options.setProperty("MenuUpdated", "No");
+		}
+		changed = true;
+	}
+	
+	public static boolean getMenuUpdateStatus() {
+		if (options.getProperty("MenuUpdated").equals("Yes")) {
+			return true;			
+		} else {
+			return false;
+		}
+	}
+	
+	public static void setMenuExpirationDate(int year, int month, int day) {
+		String strMonth = ((month+1)<10) ? ("0" + String.valueOf(month+1)) : String.valueOf(month+1);
+		String strDay = ((day)<10) ? ("0" + String.valueOf(day)) : String.valueOf(day);
+		String result = year + "-" + strMonth + "-" + strDay;
+		//System.out.println(result);
+		options.setProperty("MenuExpirationDate", result);
+	}
+	
+	public static String getMenuExpirationDate() {
+		return options.getProperty("MenuExpirationDate");
+	}
+	
+	public static void showTrayToolTip(String caption, String message) {
+		if ((tray != null) && (tip != null)) {
+			tip.setText(caption);
+			tip.setMessage(message);
+			tip.setVisible(true);
+		}
 	}
 	
 	public static void main(String[] args) {
 		
 		/// Loading application options
+		//btMenuEditor.
 		options = lunchyOptions.loadOptions();
 		if (options.getProperty("Language").equals("English"))
 			resLunchy = ResourceBundle.getBundle("lunchy_en");
@@ -69,6 +167,8 @@ public class LunchyMain {
 			resLunchy = ResourceBundle.getBundle("lunchy_ru");
 		else
 			resLunchy = ResourceBundle.getBundle("lunchy_en");
+		
+		setMakeOrderAvailability();
 		//////////////////////////////////////////
 		
 		/// Getting data from datasource
@@ -150,11 +250,37 @@ public class LunchyMain {
 		/// Opening The Main Form of application 
 		Display display = new Display();
 		LunchyMain application = new LunchyMain();
-		Shell shell = application.open(display);		
+		Shell shell = application.open(display);
+		tip = new ToolTip(shell, SWT.BALLOON | SWT.ICON_INFORMATION);
+		tray = display.getSystemTray();
+		if (tray != null) {
+			TrayItem item = new TrayItem(tray, SWT.NONE);
+			Image image = new Image(display, "icon2.jpg");
+			item.setImage(image);
+			item.setToolTip(tip);
+		}
+		
+		if (logined == 0) {
+			//showTrayToolTip("Login failed", "Login failed");
+			shell.close();
+		}
 		
 		while(!shell.isDisposed()){
-			if(!display.readAndDispatch())
+			if(!display.readAndDispatch()) {
 				display.sleep();
+				
+				if (changed) {
+					System.out.println("Changed");
+					setMakeOrderAvailability();
+					if (makeOrderAvailability) {
+						btOrder.setEnabled(true);
+					} else {
+						btOrder.setEnabled(false);
+					}
+					changed = false;
+				}
+				//System.out.println("FFF");
+			}
 		}
 		display.dispose();
 		
@@ -195,6 +321,7 @@ public class LunchyMain {
 		shell.setLayout(layout);
 		
 		createControlButtons();
+		logined = openFormLogin();
 		
 		Rectangle clientArea = display.getClientArea();
 		shell.setText("  Lunchy");
@@ -209,19 +336,20 @@ public class LunchyMain {
 	private void createControlButtons() {
 		
 		// "Edit Menu" Button
-		Button btMenuEditor = new Button(shell, SWT.PUSH);
+		btMenuEditor = new Button(shell, SWT.PUSH);
 		btMenuEditor.setText(resLunchy.getString("Edit_menu"));
 		btMenuEditor.setLayoutData(new RowData(170, 40));
 		btMenuEditor.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
+				//showTrayToolTip("Caption", "Message");
 				openFormMenuListEdit();
 			}
 		});
 		
 		// "Make Order" button
-		Button btOrder = new Button(shell, SWT.PUSH);
+		btOrder = new Button(shell, SWT.PUSH);
 		btOrder.setText(resLunchy.getString("Make_order"));
-		btOrder.setEnabled(menuAvailability);
+		btOrder.setEnabled(makeOrderAvailability);
 		btOrder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				openFormOrderCreation();
@@ -229,7 +357,7 @@ public class LunchyMain {
 		});
 		
 		// "Send order" button
-		Button btSendOrder = new Button(shell, SWT.PUSH);
+		btSendOrder = new Button(shell, SWT.PUSH);
 		btSendOrder.setText(resLunchy.getString("Send_order"));
 		btSendOrder.setEnabled(true);
 		btSendOrder.addSelectionListener(new SelectionAdapter() {
@@ -239,7 +367,7 @@ public class LunchyMain {
 		});
 		
 		// "Print order" button
-		Button btPrint = new Button(shell, SWT.PUSH);
+		btPrint = new Button(shell, SWT.PUSH);
 		btPrint.setText(resLunchy.getString("Print_order"));
 		//btPrint.setEnabled(false);
 		btPrint.addSelectionListener(new SelectionAdapter() {
@@ -252,7 +380,7 @@ public class LunchyMain {
 		});
 		
 		// "Options" button
- 		Button btOptions = new Button(shell, SWT.PUSH);
+ 		btOptions = new Button(shell, SWT.PUSH);
 		btOptions.setText(resLunchy.getString("Options"));
 		btOptions.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -264,6 +392,8 @@ public class LunchyMain {
 		statusLabel = new Label(shell, SWT.BORDER);
 		statusLabel.setText(status);
 		
+		
+		
 		//DateTime dt = new DateTime(shell, SWT.CALENDAR);
 		//statusLabel.setLayoutData(new RowData(150, 60));
 		
@@ -274,6 +404,11 @@ public class LunchyMain {
 		FormMenuListEdit menuForm = new FormMenuListEdit(shell);
 		menuForm.open();
 		
+	}
+	
+	private int openFormLogin() {
+		FormLogin loginForm = new FormLogin(shell);
+		return loginForm.open();
 	}
 	
 	private void openFormOrderCreation() {
