@@ -682,6 +682,10 @@ public class FormOrderCreation {
 		}
 		//System.out.println(amount);
 		auxOrderText.setText(resLunchy.getString("Order_amount") + " " + amount);
+		int maxAmount = Integer.valueOf(LunchyMain.options.getProperty("SingleOrderMaxSum"));
+		if (amount > maxAmount) {
+			LunchyMain.showTrayToolTip("Внимание", "Сумма заказа превышает установленное среднее значение");
+		}
 		//auxOrderText.setText("TTT");
 	}
 	

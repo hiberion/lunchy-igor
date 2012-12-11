@@ -154,11 +154,24 @@ public class FormMenuListEdit {
 		validCaption.setText(resLunchy.getString("Menu_valid_date"));
 		validCaption.setLayoutData(gridData);
 		
-		DateTime validDate = new DateTime(shell, SWT.NONE);
+		final DateTime validDate = new DateTime(shell, SWT.NONE);
 		gridData = new GridData();
 		gridData.minimumWidth = 40;
 		validDate.setLayoutData(gridData);
+		validDate.setDay(validDate.getDay()+2);  ///// + 2 work days
 		//validDate.setDate(2011, 9, 24);
+		validDate.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				LunchyMain.setMenuExpirationDate(validDate.getYear(), validDate.getMonth(), validDate.getDay());
+			}
+		});
+		validDate.addListener (SWT.KeyUp, new Listener () {
+			public void handleEvent (Event e) {
+				//System.out.println("Handle");
+				LunchyMain.setMenuExpirationDate(validDate.getYear(), validDate.getMonth(), validDate.getDay());
+			}
+		});
+		LunchyMain.setMenuExpirationDate(validDate.getYear(), validDate.getMonth(), validDate.getDay());
 		
 		final Button checkBoxUpdate = new Button(shell, SWT.CHECK | SWT.LEFT_TO_RIGHT);
 		gridData = new GridData();
@@ -166,9 +179,12 @@ public class FormMenuListEdit {
 		gridData.horizontalSpan = 2;
 		checkBoxUpdate.setText(resLunchy.getString("Menu_updated"));
 		checkBoxUpdate.setLayoutData(gridData);
+		checkBoxUpdate.setSelection(LunchyMain.getMenuUpdateStatus());
 		checkBoxUpdate.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println(checkBoxUpdate.getSelection());
+				LunchyMain.setMenuUpdateStatus(checkBoxUpdate.getSelection());
+				//LunchyMain.setMakeOrderAvailability(checkBoxUpdate.getSelection());
 			}
 		});
 		
